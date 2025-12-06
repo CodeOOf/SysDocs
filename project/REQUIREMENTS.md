@@ -51,7 +51,16 @@ SysDocs provides an automated, deterministic, and portable documentation pipelin
 | **FR-12** | The tool **shall** integrate with Git, accessing:<br>• Branches<br>• Tags<br>• Project folder structures |
 | **FR-13** | The tool **shall** maintain version integrity of documents and templates |
 
-### 2.6 Portability
+### 2.6 Manifest-Based Document Assembly
+
+| ID | Requirement |
+|----|-------------|
+| **FR-16** | The tool **shall** support manifest files (`sysdocs.manifest.json`) that define document assembly rules, including:<br>• Output document specifications<br>• Source file mappings<br>• Section extraction patterns<br>• Document metadata and templates |
+| **FR-17** | The tool **shall** extract specific sections from markdown files based on heading patterns (e.g., `## 1.1 Project Scope`) as defined in the manifest |
+| **FR-18** | The tool **shall** compose a single formal document from multiple source files, maintaining section order and renumbering as specified in the manifest |
+| **FR-19** | Manifest-based assembly **shall** produce deterministic output (byte-for-byte identical) when given the same inputs and manifest configuration |
+
+### 2.7 Portability
 
 | ID | Requirement |
 |----|-------------|
@@ -112,11 +121,11 @@ SysDocs provides an automated, deterministic, and portable documentation pipelin
 
 | Category | Count | IDs |
 |----------|-------|-----|
-| **Functional Requirements** | 15 | FR-01 to FR-15 |
+| **Functional Requirements** | 19 | FR-01 to FR-19 |
 | **Non-Functional Requirements** | 7 | NFR-01 to NFR-07 |
 | **Constraints** | 4 | C-01 to C-04 |
 | **Build Requirements** | 5 | BR-01 to BR-05 |
-| **Total Requirements** | **31** | |
+| **Total Requirements** | **35** | |
 
 ---
 

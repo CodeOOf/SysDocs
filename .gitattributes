@@ -1,0 +1,33 @@
+# Git attributes for SysDocs
+
+# Exclude development files from release archives
+.github/RELEASE_CHECKLIST.md export-ignore
+.github/workflows/ export-ignore
+.gitignore export-ignore
+.gitattributes export-ignore
+
+# Line ending normalization
+* text=auto
+
+# Explicitly declare text files
+*.cs text diff=csharp
+*.csproj text diff=csharp
+*.sln text
+*.md text
+*.json text
+*.yml text
+*.yaml text
+*.sh text eol=lf
+*.ps1 text eol=crlf
+
+# Binary files
+*.dll binary
+*.exe binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary

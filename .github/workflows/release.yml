@@ -57,6 +57,14 @@ jobs:
             --filter "Category=Determinism" \
             --verbosity normal
       
+      - name: Run FR-16-19 Manifest-Based Assembly Tests
+        run: |
+          dotnet test tests/SysDocs.Tests/SysDocs.Tests.csproj \
+            --configuration ${{ env.CONFIGURATION }} \
+            --no-build \
+            --filter "Category=Manifest" \
+            --verbosity normal
+      
       - name: Publish Linux x64
         run: |
           dotnet publish src/SysDocs.Cli/SysDocs.Cli.csproj \
@@ -103,42 +111,7 @@ jobs:
             artifacts/SHA256SUMS.asc
           retention-days: 7
 
-  # Job 2: Create NuGet packages (optional - for library consumers)
-  build-nuget:
-    name: Build NuGet Packages
-    runs-on: ubuntu-latest
-    if: ${{ secrets.NUGET_API_KEY != '' }}
-    
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-      
-      - name: Restore dependencies
-        run: dotnet restore ${{ env.SOLUTION }}
-      
-      - name: Build solution
-        run: dotnet build ${{ env.SOLUTION }} --configuration ${{ env.CONFIGURATION }} --no-restore
-      
-      - name: Pack NuGet packages
-        run: |
-          dotnet pack src/SysDocs.Core/SysDocs.Core.csproj --configuration ${{ env.CONFIGURATION }} --output artifacts/nuget --no-build
-          dotnet pack src/SysDocs.Templates/SysDocs.Templates.csproj --configuration ${{ env.CONFIGURATION }} --output artifacts/nuget --no-build
-      
-      - name: Upload NuGet artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: nuget-packages
-          path: artifacts/nuget/*.nupkg
-          retention-days: 7
-
-  # Job 3: Build and push Docker image with Cosign signing (PRIMARY DEPLOYMENT)
+  # Job 2: Build and push Docker image with Cosign signing (PRIMARY DEPLOYMENT)
   build-docker:
     name: Build & Sign Docker Image
     runs-on: ubuntu-latest
@@ -471,35 +444,5 @@ jobs:
             artifacts/linux/sysdocs-linux-x64.tar.gz
             artifacts/linux/sysdocs-linux-x64.tar.gz.asc
             artifacts/linux/SHA256SUMS.asc
-            artifacts/nuget/*.nupkg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  # Job 7: Publish to NuGet.org (optional, only for stable releases)
-  publish-nuget:
-    name: Publish to NuGet.org
-    runs-on: ubuntu-latest
-    needs: [build-nuget, create-release]
-    if: ${{ !contains(github.ref, 'alpha') && !contains(github.ref, 'beta') && secrets.NUGET_API_KEY != '' }}
-    
-    steps:
-      - name: Download NuGet packages
-        uses: actions/download-artifact@v4
-        with:
-          name: nuget-packages
-          path: artifacts/nuget
-      
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-      
-      - name: Publish to NuGet.org
-        run: |
-          for pkg in artifacts/nuget/*.nupkg; do
-            echo "Publishing $pkg to NuGet.org..."
-            dotnet nuget push "$pkg" \
-              --api-key "${{ secrets.NUGET_API_KEY }}" \
-              --source https://api.nuget.org/v3/index.json \
-              --skip-duplicate
-          done

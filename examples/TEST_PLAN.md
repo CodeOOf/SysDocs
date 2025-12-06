@@ -127,6 +127,45 @@ Verify that SysDocs can process an entire project folder and generate a comprehe
 
 **Expected Result**: All three hashes are identical
 
+### TC-11: Manifest-Based Assembly - Multi-File SEMP (FR-16, FR-17, FR-18)
+**Requirement**: FR-16 (Manifest support), FR-17 (Section extraction), FR-18 (Multi-file composition)  
+**Input**: `skynet-repo/sysdocs.manifest.json`  
+**Test Procedure**:
+1. SysDocs reads manifest file
+2. Extracts sections from README.md (1.1-1.10)
+3. Extracts sections from project_description.md (2.1-2.8)
+4. Extracts sections from docs/engineering_process.md (3.1-3.4)
+5. Composes single SEMP PDF with proper ordering and renumbering
+
+**Expected Result**: 
+- PDF generated: `01_SEMP_SkyNet.pdf`
+- Contains all specified sections in correct order
+- Section numbers remapped per manifest
+- Deterministic output (byte-for-byte identical on repeated runs)
+
+### TC-12: Manifest-Based Assembly - Single File with Section Extraction (FR-17)
+**Requirement**: FR-17 (Section extraction from markdown headings)  
+**Input**: `skynet-repo/sysdocs.manifest.json` (StRS document)  
+**Test Procedure**:
+1. SysDocs reads manifest
+2. Extracts sections 4.1-4.4 from requirements/stakeholder_requirements.md
+3. Generates complete StRS PDF
+
+**Expected Result**:
+- PDF generated: `10_StRS_SkyNet.pdf`
+- Contains only specified sections (4.1-4.4)
+- Deterministic output
+
+### TC-13: Manifest Determinism (FR-19, NFR-01)
+**Requirement**: FR-19 (Deterministic manifest-based output)  
+**Input**: `adns-project/sysdocs.manifest.json`  
+**Test Procedure**:
+1. Generate all PDFs from manifest (run 1)
+2. Generate all PDFs from manifest (run 2)
+3. Compare SHA256 hashes for all outputs
+
+**Expected Result**: All hashes identical between runs
+
 ---
 
 ## Test Execution

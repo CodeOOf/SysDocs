@@ -216,6 +216,43 @@ SysDocs/
 
 ## 🔧 Development Setup
 
+### Advanced Features
+
+#### Manifest-Based Document Assembly
+
+SysDocs supports **manifest-based document assembly** for composing formal SE documents from distributed markdown files across git repository structures. This enables modern documentation practices while maintaining SE compliance.
+
+**Example**: Compose a SEMP from `README.md` + `project_description.md` + `docs/engineering_process.md`:
+
+```json
+{
+  "documents": [{
+    "outputName": "01_SEMP_Project.pdf",
+    "sources": [
+      {"file": "README.md", "sections": ["1.1", "1.2"]},
+      {"file": "project_description.md", "sections": ["2.1"]},
+      {"file": "docs/engineering_process.md", "sections": ["3.1"]}
+    ]
+  }]
+}
+```
+
+**Benefits**:
+- ✅ Documentation lives in repository (README, docs/)
+- ✅ Formal SE documents assembled automatically
+- ✅ Byte-for-byte deterministic output
+- ✅ Full traceability to source sections
+
+See [docs/MANIFEST_BASED_ASSEMBLY.md](docs/MANIFEST_BASED_ASSEMBLY.md) for complete documentation.
+
+**Example Projects**:
+- `examples/adns-project/` - Traditional single-file SE documents
+- `examples/skynet-repo/` - Modern git-repo with manifest assembly
+
+---
+
+## 🔧 Development Setup
+
 See [project/CONTRIBUTING.md](project/CONTRIBUTING.md) for detailed instructions on:
 
 - Setting up your development environment

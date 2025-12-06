@@ -1,0 +1,103 @@
+{
+  "$schema": "https://sysdocs.example.com/schemas/manifest/v1.0.0",
+  "version": "1.0.0",
+  "project": {
+    "name": "SkyNet AI Training Platform",
+    "shortName": "SkyNet",
+    "version": "2.1.0",
+    "description": "Git repository-style SE documentation with distributed markdown files mapped to formal documents",
+    "date": "2025-12-06"
+  },
+  "documents": [
+    {
+      "outputName": "01_SEMP_SkyNet.pdf",
+      "title": "Systems Engineering Management Plan",
+      "standard": "ISO/IEC 15288",
+      "type": "management",
+      "sources": [
+        {
+          "file": "README.md",
+          "type": "markdown",
+          "sections": ["1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9", "1.10"],
+          "sectionMapping": {
+            "1.1": "1. Project Scope",
+            "1.2": "1. Project Overview",
+            "1.3": "1. Stakeholders",
+            "1.4": "1. Product Context",
+            "1.5": "1. Success Criteria",
+            "1.6": "1. System Architecture",
+            "1.7": "1. Technology Stack",
+            "1.8": "1. Constraints",
+            "1.9": "1. Risks",
+            "1.10": "1. Compliance"
+          }
+        },
+        {
+          "file": "project_description.md",
+          "type": "markdown",
+          "sections": ["2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8"],
+          "sectionMapping": {
+            "2.1": "2. System Purpose",
+            "2.2": "2. Technical Architecture",
+            "2.3": "2. User Workflows",
+            "2.4": "2. Deployment Model",
+            "2.5": "2. Performance Characteristics",
+            "2.6": "2. Integration Points",
+            "2.7": "2. Security Model",
+            "2.8": "2. Operations"
+          }
+        },
+        {
+          "file": "docs/engineering_process.md",
+          "type": "markdown",
+          "sections": ["3.1", "3.2", "3.3", "3.4"],
+          "sectionMapping": {
+            "3.1": "3. V-Model Lifecycle",
+            "3.2": "3. Development Practices",
+            "3.3": "3. Requirements Engineering",
+            "3.4": "3. Configuration Management"
+          }
+        }
+      ]
+    },
+    {
+      "outputName": "10_StRS_SkyNet.pdf",
+      "title": "Stakeholder Requirements Specification",
+      "standard": "ISO/IEC 29148",
+      "type": "requirements",
+      "sources": [
+        {
+          "file": "requirements/stakeholder_requirements.md",
+          "type": "markdown",
+          "sections": ["4.1", "4.2", "4.3", "4.4"],
+          "sectionMapping": {
+            "4.1": "1. User Needs",
+            "4.2": "2. Business Requirements",
+            "4.3": "3. Functional Requirements",
+            "4.4": "4. Non-Functional Requirements"
+          }
+        }
+      ]
+    }
+  ],
+  "templates": {
+    "default": "standard-se-document",
+    "coverPage": true,
+    "toc": true,
+    "headers": true,
+    "footers": true,
+    "watermark": null
+  },
+  "metadata": {
+    "organization": "AI Platform Engineering",
+    "classification": "Internal Use",
+    "author": "Platform Team",
+    "reviewer": "Chief Architect"
+  },
+  "sectionExtraction": {
+    "enabled": true,
+    "strategy": "heading-based",
+    "headingPattern": "^#{1,6}\\s+(\\d+\\.\\d+)\\s+(.+)$",
+    "description": "Extract sections based on heading patterns like '## 1.1 Project Scope'"
+  }
+}

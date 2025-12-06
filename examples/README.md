@@ -4,13 +4,23 @@ This directory contains complete example project documentation for testing SysDo
 
 ## Projects
 
-### ADNS Project (Autonomous Drone Navigation System)
+### 1. ADNS Project (Autonomous Drone Navigation System)
 
 A comprehensive systems engineering documentation set for a fictional aerospace project. Follows INCOSE SE Handbook v4 and IEEE standards.
 
-**Location**: `examples/adns-project/`
+**Location**: `examples/adns-project/`  
+**Pattern**: Single-file SE documents (traditional approach)  
+**Documents**: 8+ complete SE documents  
+**Manifest**: `sysdocs.manifest.json` (defines simple 1:1 file-to-document mapping)
 
-**Documents**: 8 complete SE documents (more in progress)
+### 2. SkyNet Repository (AI Training Platform)
+
+A git repository-style documentation structure where formal SE documents are assembled from distributed markdown files (README, docs/, requirements/).
+
+**Location**: `examples/skynet-repo/`  
+**Pattern**: Multi-file SE document assembly (modern git-repo approach)  
+**Documents**: Distributed across README.md, project_description.md, docs/, requirements/  
+**Manifest**: `sysdocs.manifest.json` (defines advanced multi-file mapping with section extraction)
 
 ---
 

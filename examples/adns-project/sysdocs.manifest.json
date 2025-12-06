@@ -1,0 +1,174 @@
+{
+  "$schema": "https://sysdocs.example.com/schemas/manifest/v1.0.0",
+  "version": "1.0.0",
+  "project": {
+    "name": "Autonomous Drone Navigation System (ADNS)",
+    "shortName": "ADNS",
+    "version": "1.2.0",
+    "description": "Complete SE documentation set for autonomous drone navigation system",
+    "date": "2025-12-06"
+  },
+  "documents": [
+    {
+      "outputName": "01_SEMP_ADNS.pdf",
+      "title": "Systems Engineering Management Plan",
+      "standard": "ISO/IEC 15288",
+      "type": "management",
+      "sources": [
+        {
+          "file": "01_SEMP_ADNS.md",
+          "type": "markdown",
+          "sections": "all"
+        }
+      ]
+    },
+    {
+      "outputName": "10_StRS_ADNS.pdf",
+      "title": "Stakeholder Requirements Specification",
+      "standard": "ISO/IEC 29148",
+      "type": "requirements",
+      "sources": [
+        {
+          "file": "10_StRS_ADNS.md",
+          "type": "markdown",
+          "sections": "all"
+        }
+      ]
+    },
+    {
+      "outputName": "11_ConOps_ADNS.pdf",
+      "title": "Concept of Operations",
+      "standard": "IEEE 1362",
+      "type": "requirements",
+      "sources": [
+        {
+          "file": "11_ConOps_ADNS.md",
+          "type": "markdown",
+          "sections": "all"
+        }
+      ]
+    },
+    {
+      "outputName": "12_SRS_ADNS.pdf",
+      "title": "System Requirements Specification",
+      "standard": "ISO/IEC 29148",
+      "type": "requirements",
+      "sources": [
+        {
+          "file": "12_SRS_ADNS.md",
+          "type": "markdown",
+          "sections": "all"
+        }
+      ]
+    },
+    {
+      "outputName": "13_RTM_ADNS.pdf",
+      "title": "Requirements Traceability Matrix",
+      "type": "traceability",
+      "sources": [
+        {
+          "file": "13_RTM_ADNS.md",
+          "type": "markdown",
+          "sections": "all"
+        },
+        {
+          "file": "13_RTM_ADNS.csv",
+          "type": "csv",
+          "appendAs": "table"
+        },
+        {
+          "file": "13_RTM_ADNS.json",
+          "type": "json",
+          "appendAs": "formatted"
+        }
+      ]
+    },
+    {
+      "outputName": "21_SDD_ADNS_Software.pdf",
+      "title": "Software Design Document",
+      "standard": "IEEE 1016",
+      "type": "design",
+      "sources": [
+        {
+          "file": "21_SDD_ADNS_Software.tex",
+          "type": "latex",
+          "sections": "all"
+        }
+      ]
+    },
+    {
+      "outputName": "22_HDD_ADNS_Hardware.pdf",
+      "title": "Hardware Design Document",
+      "type": "design",
+      "sources": [
+        {
+          "file": "22_HDD_ADNS_Hardware.txt",
+          "type": "plaintext",
+          "sections": "all"
+        }
+      ]
+    },
+    {
+      "outputName": "23_ICD_ADNS_Sensors.pdf",
+      "title": "Interface Control Document - Sensors",
+      "type": "interface",
+      "sources": [
+        {
+          "file": "23_ICD_ADNS_Sensors.txt",
+          "type": "plaintext",
+          "sections": "all"
+        }
+      ]
+    },
+    {
+      "outputName": "31_STP_ADNS.pdf",
+      "title": "System Test Plan",
+      "type": "verification",
+      "sources": [
+        {
+          "file": "31_STP_ADNS.md",
+          "type": "markdown",
+          "sections": "all"
+        }
+      ]
+    },
+    {
+      "outputName": "40_FMEA_ADNS.pdf",
+      "title": "Failure Modes and Effects Analysis",
+      "type": "safety",
+      "sources": [
+        {
+          "file": "40_FMEA_ADNS.md",
+          "type": "markdown",
+          "sections": "all"
+        }
+      ]
+    },
+    {
+      "outputName": "90_Glossary_ADNS.pdf",
+      "title": "Technical Glossary",
+      "type": "reference",
+      "sources": [
+        {
+          "file": "90_Glossary_ADNS.csv",
+          "type": "csv",
+          "renderAs": "glossary"
+        }
+      ]
+    }
+  ],
+  "templates": {
+    "default": "standard-se-document",
+    "coverPage": true,
+    "toc": true,
+    "headers": true,
+    "footers": true,
+    "watermark": "DRAFT"
+  },
+  "metadata": {
+    "organization": "ACME Aerospace",
+    "classification": "Internal Use Only",
+    "author": "Systems Engineering Team",
+    "reviewer": "Chief Systems Engineer"
+  }
+}

@@ -252,6 +252,70 @@ This matrix provides a complete view of each requirement:
 
 ---
 
+### FR-16: Manifest File Support for Document Assembly
+**Category**: Manifest-Based Assembly  
+**Requirement**: Tool shall support manifest files (sysdocs.manifest.json) defining document assembly rules  
+**Implementation**: Pending - `src/SysDocs.Core/Manifest/ManifestReader.cs`, `ManifestProcessor.cs`  
+**Libraries**: System.Text.Json for manifest parsing  
+**Tests**: ✅ Has test structure (skipped pending implementation)  
+**Test Class**: `tests/SysDocs.Tests/Integration/Manifests/FR16_ManifestBasedAssemblyTests.cs`  
+**Test Cases**: TC-11, TC-12, TC-13, TC-18, TC-20  
+**Deviations**: None  
+**Verification**:
+- Unit tests for manifest JSON parsing and validation
+- Integration tests for complete manifest-based assembly
+- Test examples: adns-project/sysdocs.manifest.json, skynet-repo/sysdocs.manifest.json
+
+---
+
+### FR-17: Section Extraction from Markdown Headings
+**Category**: Manifest-Based Assembly  
+**Requirement**: Tool shall extract specific sections from markdown files based on heading patterns (e.g., ## 1.1 Project Scope)  
+**Implementation**: Pending - `src/SysDocs.Core/Manifest/SectionExtractor.cs`  
+**Pattern**: Regex-based heading matching with configurable patterns  
+**Tests**: ✅ Has test structure (skipped pending implementation)  
+**Test Class**: `tests/SysDocs.Tests/Integration/Manifests/FR16_ManifestBasedAssemblyTests.cs`  
+**Test Cases**: TC-11, TC-12, TC-14, TC-19  
+**Deviations**: None  
+**Verification**:
+- Unit tests for heading pattern matching
+- Integration tests for section extraction with various heading formats
+- Edge case testing: missing sections, malformed headings
+
+---
+
+### FR-18: Multi-File Document Composition
+**Category**: Manifest-Based Assembly  
+**Requirement**: Tool shall compose a single formal document from multiple source files, maintaining section order and renumbering  
+**Implementation**: Pending - `src/SysDocs.Core/Manifest/DocumentComposer.cs`  
+**Features**: Section ordering, renumbering, content merging  
+**Tests**: ✅ Has test structure (skipped pending implementation)  
+**Test Class**: `tests/SysDocs.Tests/Integration/Manifests/FR16_ManifestBasedAssemblyTests.cs`  
+**Test Cases**: TC-11, TC-15, TC-16  
+**Deviations**: None  
+**Verification**:
+- Integration tests for multi-file assembly
+- Section ordering verification
+- Section renumbering accuracy testing
+
+---
+
+### FR-19: Deterministic Manifest-Based Output
+**Category**: Manifest-Based Assembly + Determinism  
+**Requirement**: Manifest-based assembly shall produce deterministic output (byte-for-byte identical)  
+**Implementation**: Pending - Extends FR-06 determinism to manifest-based workflows  
+**Related**: FR-06 (Determinism), NFR-01 (Reproducibility), FR-14 (Cross-platform)  
+**Tests**: ✅ Has test structure (skipped pending implementation)  
+**Test Class**: `tests/SysDocs.Tests/Integration/Manifests/FR16_ManifestBasedAssemblyTests.cs`  
+**Test Cases**: TC-13, TC-17  
+**Deviations**: None  
+**Verification**:
+- Determinism tests (repeated runs with same manifest)
+- Cross-platform determinism (Linux, Windows, macOS)
+- Hash comparison with expected results
+
+---
+
 ## Non-Functional Requirements
 
 ### NFR-01: 100% reproducible output
@@ -509,7 +573,7 @@ dotnet run --project tests/SysDocs.Tests -- --traceability
 ```
 
 Then check [reports/TEST_TRACEABILITY.md](reports/TEST_TRACEABILITY.md) for:
-- Total requirements: 26
+- Total requirements: 35 (FR-01 to FR-19, NFR-01 to NFR-07, C-01 to C-04, BR-01 to BR-05)
 - Requirements with automated tests
 - Requirements with manual verification only
 - Requirements without tests

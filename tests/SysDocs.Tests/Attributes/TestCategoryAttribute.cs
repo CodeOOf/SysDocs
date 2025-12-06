@@ -29,4 +29,5 @@ public static class TestCategories
     public const string CrossPlatform = "CrossPlatform";
     public const string Performance = "Performance";
     public const string FileFormat = "FileFormat";
+    public const string Manifest = "Manifest";
 }

@@ -35,6 +35,8 @@ help: ## Show this help message
 	@echo "  test-unit       Run unit tests only"
 	@echo "  test-integration Run integration tests only"
 	@echo "  test-coverage   Run tests with coverage"
+	@echo "  test-determinism Run determinism tests"
+	@echo "  test-manifest   Run manifest-based assembly tests"
 	@echo "  publish         Publish the CLI application"
 	@echo "  docker          Build Docker image"
 	@echo "  docker-nix      Build Docker image with Nix (deterministic)"
@@ -85,6 +87,20 @@ test-integration: build ## Run integration tests only
 		--configuration $(CONFIGURATION) \
 		--no-build \
 		--filter "Category=Integration"
+
+test-determinism: build ## Run determinism tests only
+	@echo "==> Running determinism tests..."
+	dotnet test $(SOLUTION) \
+		--configuration $(CONFIGURATION) \
+		--no-build \
+		--filter "Category=Determinism"
+
+test-manifest: build ## Run manifest-based assembly tests only
+	@echo "==> Running manifest tests..."
+	dotnet test $(SOLUTION) \
+		--configuration $(CONFIGURATION) \
+		--no-build \
+		--filter "Category=Manifest"
 
 test-coverage: build ## Run tests with coverage
 	@echo "==> Running tests with coverage..."
