@@ -6,82 +6,99 @@
 
 ## Overview
 
-SysDocs supports importing SysML v2 (Systems Modeling Language version 2) models and mapping them to Systems Engineering documentation artifacts aligned with the V-Model and INCOSE SE Handbook.
+SysDocs supports importing SysML v2 (Systems Modeling Language version 2) models and rendering them in Systems Engineering documentation aligned with the V-Model and INCOSE SE Handbook.
 
-### Supported SysML v2 Elements
+### Core Capabilities
 
-| SysML v2 Element | Maps To | Requirements |
-|------------------|---------|--------------|
-| **Requirements** | Stakeholder Requirements, System Requirements | FR-20 |
-| **Use Cases** | Stakeholder Requirements, System Requirements | FR-21 |
-| **Block Diagrams** | System Architecture, Detailed Design | FR-22 |
-| **Sequence Diagrams** | System Architecture (behavioral), Detailed Design (interactions) | FR-23 |
-| **Traceability Links** | Preserved across all document types | FR-24 |
+| Capability | Description | Requirements |
+|------------|-------------|--------------|
+| **Model Import** | Import complete SysML v2 models with traceability | FR-20 |
+| **Diagram Support** | 9 SysML v2 diagram types (Requirements, Use Case, BDD, IBD, Parametric, Activity, Sequence, State Machine, Package) | FR-21 |
+| **File Formats** | Support .sysml, .kerml, .json, .sysmlv2 formats | FR-22 |
+| **Diagram Rendering** | Render diagrams as embedded SVG/PNG/PDF images | FR-23 |
+| **Property Extraction** | Extract and present model element properties | FR-24 |
+| **Deterministic Output** | Byte-for-byte identical output across formats | FR-25 |
 
-### File Format Support
+### Supported Diagram Types (FR-21)
 
-SysDocs supports three SysML v2 file formats (FR-25):
+1. **Requirements Diagram** - Requirements hierarchy and relationships
+2. **Use Case Diagram** - Actors, use cases, and associations
+3. **Block Definition Diagram (BDD)** - System structure and composition
+4. **Internal Block Diagram (IBD)** - Internal connections and flows
+5. **Parametric Diagram** - Constraint equations and parameters
+6. **Activity Diagram** - Behavioral workflows and actions
+7. **Sequence Diagram** - Temporal message sequences
+8. **State Machine Diagram** - State transitions and behaviors
+9. **Package Diagram** - Model organization and dependencies
+
+### File Format Support (FR-22)
+
+SysDocs supports four SysML v2 file formats:
 
 1. **`.sysml`** - SysML v2 textual syntax (primary format)
 2. **`.kerml`** - Kernel Modeling Language files
 3. **`.json`** - SysML v2 API JSON format
+4. **`.sysmlv2`** - Alternative textual syntax
 
-All three formats are parsed to the same internal representation, ensuring equivalent models produce identical output regardless of source format.
+All formats are parsed to the same internal representation, ensuring equivalent models produce identical output (FR-25).
 
-## V-Model Mapping
+## Model-Based Documentation Approach
 
-### Left Side - Requirements & Design
+SysDocs treats SysML v2 models as **source artifacts** that can be rendered into various documentation formats. The tool does NOT prescribe specific document mappings but provides flexibility to:
 
-```
-┌─────────────────────────────┐
-│  Stakeholder Requirements   │ ← SysML Requirements (stakeholder-level)
-│  (FR-20, FR-21)             │ ← SysML Use Cases (stakeholder scenarios)
-└─────────────────────────────┘
-              ↓
-┌─────────────────────────────┐
-│  System Requirements        │ ← SysML Requirements (system-level)
-│  (FR-20, FR-21)             │ ← SysML Use Cases (system scenarios)
-└─────────────────────────────┘
-              ↓
-┌─────────────────────────────┐
-│  System Architecture        │ ← SysML Block Diagrams (structure)
-│  (FR-22, FR-23)             │ ← SysML Sequence Diagrams (behavior)
-└─────────────────────────────┘
-              ↓
-┌─────────────────────────────┐
-│  Detailed Design            │ ← SysML Block Diagrams (internal design)
-│  (FR-22, FR-23)             │ ← SysML Sequence Diagrams (interactions)
-└─────────────────────────────┘
-```
+- Render any diagram type in any document
+- Extract model elements for tabular presentations
+- Generate traceability matrices
+- Embed diagrams as images
+- Present element properties in structured formats
 
-### Traceability (FR-24)
+**User Control**: Documentation structure is defined by:
+- **Templates** (FR-05) - Control layout and styling
+- **Manifests** (FR-16-19) - Define document assembly
+- **User Configuration** - Specify what to include and where
 
-All SysML v2 traceability relationships are preserved:
+## Traceability Relationships
+
+SysDocs preserves all SysML v2 traceability relationships defined in models (FR-20):
 
 - **satisfy** - Design element satisfies requirement
 - **refine** - Requirement refines higher-level requirement
 - **derive** - Requirement derived from another
 - **verify** - Test verifies requirement
 - **realize** - Component realizes design element
+- **compose** - Part is composed within whole
+- **associate** - General association between elements
+- **generalize** - Specialization/generalization relationship
+
+These relationships are maintained in the internal model and can be presented in various ways:
+- Traceability matrices
+- Cross-reference tables
+- Inline references in element descriptions
+- Graphical representations in diagrams
 
 ## Requirements Details
 
-### FR-20: Import SysML v2 Requirements
+### FR-20: Import SysML v2 Models
 
-**Capability**: Import SysML v2 requirement definitions and map to documentation
+**Capability**: Import complete SysML v2 models, preserving all element relationships and traceability links
 
-**Supported Attributes**:
-- Requirement ID
-- Requirement text/description
-- Priority
-- Source/rationale
-- Verification method (for system requirements)
-- Verification criteria
-- Traceability links (satisfy, refine, derive)
+**Supported Elements**:
+- Requirements (requirement definitions with attributes)
+- Use Cases (actors, scenarios, conditions)
+- Blocks (parts, ports, properties, constraints, operations)
+- Interactions (lifelines, messages, timing)
+- States (state machines, transitions, behaviors)
+- Activities (actions, flows, decisions)
+- Parameters (constraints, equations)
+- Packages (model organization)
+- All SysML v2 relationships (satisfy, refine, derive, verify, realize, compose, associate, generalize)
 
-**Document Mapping**:
-- **Stakeholder Requirements**: High-level needs, business objectives
-- **System Requirements**: Derived functional/non-functional requirements with verification approach
+**Core Functions**:
+- Parse SysML v2 models from supported file formats
+- Build internal representation of model structure
+- Extract all model elements with properties
+- Maintain element relationships and traceability
+- Support model queries and navigation
 
 **Example**:
 ```sysml
@@ -94,81 +111,205 @@ requirement STK_REQ_001 : StakeholderNeed {
 requirement SYS_REQ_001 : SystemRequirement {
     doc /* System shall maintain 99.9% uptime */
     attribute verificationMethod = "Test";
-    satisfy STK_REQ_001;
+    satisfy STK_REQ_001;  // Traceability link preserved
 }
 ```
 
-### FR-21: Import SysML v2 Use Cases
+---
 
-**Capability**: Import SysML v2 use case definitions and map to documentation
+### FR-21: Support SysML v2 Diagram Types
 
-**Supported Attributes**:
-- Use case name
-- Actors (primary and secondary)
-- Preconditions
-- Postconditions
-- Main success scenario
-- Alternative flows
+**Capability**: Support all 9 core SysML v2 diagram types as defined by OMG specification
+
+**1. Requirements Diagram**
+- Visualizes requirement hierarchy and relationships
+- Shows containment, derivation, satisfaction, verification
+- Displays requirement attributes inline
+
+**2. Use Case Diagram**
+- Shows actors and their interactions with use cases
+- Displays system boundaries
+- Shows use case relationships (include, extend, generalization)
+
+**3. Block Definition Diagram (BDD)**
+- Structural view of system composition
+- Shows blocks, value types, and relationships
+- Displays generalization, association, composition, aggregation
+
+**4. Internal Block Diagram (IBD)**
+- Internal structure and connections within blocks
+- Shows parts, ports, and connectors
+- Displays item flows between ports
+
+**5. Parametric Diagram**
+- Constraint equations and parameter bindings
+- Shows constraint blocks and value properties
+- Displays mathematical relationships
+
+**6. Activity Diagram**
+- Behavioral workflows and processes
+- Shows actions, control flow, object flow
+- Displays decision points, forks, joins
+
+**7. Sequence Diagram**
+- Temporal ordering of interactions
+- Shows lifelines, messages, execution specifications
+- Displays timing constraints and guards
+
+**8. State Machine Diagram**
+- State-based behavior specifications
+- Shows states, transitions, events, guards, effects
+- Displays entry/exit behaviors
+
+**9. Package Diagram**
+- Model organization and dependencies
+- Shows packages and their relationships
+- Displays import/access dependencies
+
+**Output**: Each diagram type is rendered as an embedded image (SVG/PNG/PDF) with optional textual descriptions
+
+---
+
+### FR-22: Support SysML v2 File Formats
+
+**Capability**: Parse and import SysML v2 models from multiple file formats
+
+**Supported Formats**:
+
+1. **`.sysml` - SysML v2 Textual Syntax**
+   - Human-readable textual representation
+   - Primary authoring format
+   - Direct KerML + SysML v2 syntax
+
+2. **`.kerml` - Kernel Modeling Language**
+   - Foundation layer of SysML v2
+   - Core metamodel elements
+   - Can be extended with SysML v2 constructs
+
+3. **`.json` - SysML v2 API Format**
+   - JSON representation following SysML v2 API specification
+   - Machine-generated and processed
+   - Interoperability with SysML v2 tools via REST API
+
+4. **`.sysmlv2` - Alternative Textual Syntax**
+   - Alternative file extension for SysML v2 textual format
+   - Same syntax as .sysml
+   - Used by some tools for clarity
+
+**Format Detection**: Automatic format detection based on file extension and content structure
+
+**Equivalence**: Models with identical content produce identical output regardless of source format (FR-25)
+
+---
+
+### FR-23: Render SysML v2 Diagrams
+
+**Capability**: Render SysML v2 diagrams as embedded images in output documents
+
+**Supported Output Formats**:
+- **SVG** (Scalable Vector Graphics) - Preferred for quality and scalability
+- **PNG** (Portable Network Graphics) - Fallback for compatibility
+- **PDF** (Portable Document Format) - Direct embedding for PDF outputs
+
+**Rendering Features**:
+- High-quality vector graphics (SVG preferred)
+- Configurable resolution and sizing
+- Consistent styling across diagrams
+- Support for diagram annotations and notes
+- Deterministic rendering (FR-25)
+
+**Image Embedding**:
+- Diagrams embedded directly in PDF output
+- Maintains aspect ratio and readability
+- Supports captions and references
+- Controlled via templates (FR-05)
+
+**Example Configuration**:
+```json
+{
+  "sysml": {
+    "diagramFormat": "svg",
+    "defaultWidth": 800,
+    "defaultHeight": 600,
+    "quality": "high"
+  }
+}
+```
+
+---
+
+### FR-24: Extract SysML v2 Element Properties
+
+**Capability**: Extract and present model element properties in structured formats
+
+**Requirements Properties**:
+- ID, text, description
+- Priority, status, risk level
+- Source, rationale
+- Verification method and criteria
+- Traceability relationships
+
+**Use Case Properties**:
+- Name, description
+- Actors (primary, secondary, supporting)
+- Preconditions, postconditions
+- Main scenario, alternative flows
 - Exception handling
-- System boundary (for system use cases)
-- System functions referenced
+- System boundary
 
-**Document Mapping**:
-- **Stakeholder Requirements**: User-facing scenarios, business workflows
-- **System Requirements**: System-level use cases with technical details
+**Block Properties**:
+- Name, type, stereotype
+- Ports (name, type, direction)
+- Properties (name, type, multiplicity, default value)
+- Constraints (mathematical, behavioral)
+- Operations (signature, parameters, return type)
+- Internal parts and connections
+
+**Interaction Properties**:
+- Scenario name, description
+- Lifelines (representing blocks/actors)
+- Messages (signature, parameters, sequence number, message type)
+- Timing constraints (duration, deadline)
+- Guards and conditions
+
+**Output Formats**:
+- Tabular presentations (requirements tables, property lists)
+- Structured text (descriptions, specifications)
+- Traceability matrices
+- Cross-reference indices
+
+---
+
+### FR-25: Deterministic SysML v2 Output
+
+**Capability**: Ensure byte-for-byte identical output for equivalent SysML v2 models
+
+**Determinism Guarantees**:
+- Same model → Same output (regardless of import timing)
+- Different formats (.sysml, .kerml, .json) → Same output (if equivalent content)
+- Cross-platform → Same output (Windows, Linux, macOS)
+- Repeated runs → Same output (no timestamps, no random elements)
+
+**Implementation Approach**:
+- Normalize diagram layouts (fixed coordinates, stable ordering)
+- Remove timestamps from metadata
+- Stable element sorting (alphabetical or by ID)
+- Deterministic UUID handling
+- Consistent font rendering
+- Normalized line endings and whitespace
+
+**Verification**: SHA-256 hash comparison confirms byte-for-byte identity
 
 **Example**:
-```sysml
-usecase GenerateDocument {
-    doc /* User generates a PDF document from sources */
-    
-    actor :> User;
-    subject :> DocumentationSystem;
-    
-    attribute preconditions = "User authenticated, sources available";
-    attribute postconditions = "PDF generated and available for download";
-}
+```bash
+# Import same model twice
+sysdocs import model.sysml -o output1.pdf
+sysdocs import model.sysml -o output2.pdf
+
+# Verify determinism
+sha256sum output1.pdf output2.pdf
+# Both should have identical hash
 ```
-
-### FR-22: Import SysML v2 Block Diagrams
-
-**Capability**: Import SysML v2 block structure and relationships
-
-**Supported Elements**:
-- Block definitions (parts)
-- Ports and interfaces
-- Properties and attributes
-- Composition relationships
-- Association relationships
-- Generalization hierarchies
-- Internal parts
-- Constraints
-- Operations
-
-**Document Mapping**:
-- **System Architecture**: High-level system decomposition, subsystems, interfaces
-- **Detailed Design**: Component internal structure, detailed interfaces, operations
-
-**Output Format**:
-- Embedded diagram images (SVG or PNG)
-- Textual descriptions of blocks and relationships
-- Port connection tables
-- Interface specifications
-
-**Example**:
-```sysml
-part def DocumentationSystem {
-    part importSubsystem : ImportSubsystem;
-    part processingSubsystem : ProcessingSubsystem;
-    
-    port inputPort : DocumentInputPort;
-    port outputPort : DocumentOutputPort;
-    
-    connect importSubsystem.output to processingSubsystem.input;
-}
-```
-
-### FR-23: Import SysML v2 Sequence Diagrams
 
 **Capability**: Import SysML v2 interaction specifications
 

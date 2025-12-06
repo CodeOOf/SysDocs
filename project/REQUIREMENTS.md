@@ -64,12 +64,12 @@ SysDocs provides an automated, deterministic, and portable documentation pipelin
 
 | ID | Requirement |
 |----|-------------|
-| **FR-20** | The tool **shall** import SysML v2 Requirements and map them to:<br>• Stakeholder Requirements documentation<br>• System Requirements documentation |
-| **FR-21** | The tool **shall** import SysML v2 Use Cases and map them to:<br>• Stakeholder Requirements documentation<br>• System Requirements documentation |
-| **FR-22** | The tool **shall** import SysML v2 Block Diagrams and map them to:<br>• System Architecture documentation<br>• Detailed Design documentation |
-| **FR-23** | The tool **shall** import SysML v2 Sequence Diagrams and map them to:<br>• System Architecture documentation (behavioral view)<br>• Detailed Design documentation (interaction specifications) |
-| **FR-24** | SysML v2 import **shall** preserve traceability links between requirements, use cases, and design elements |
-| **FR-25** | The tool **shall** support SysML v2 file formats including:<br>• `.sysml` (textual representation)<br>• `.kerml` (KerML files)<br>• `.json` (SysML v2 API JSON format) |
+| **FR-20** | The tool **shall** import SysML v2 models, preserving traceability links and element relationships |
+| **FR-21** | The tool **shall** support SysML v2 diagram types including:<br>• Requirements diagrams<br>• Use Case diagrams<br>• Block Definition diagrams (BDD)<br>• Internal Block diagrams (IBD)<br>• Parametric diagrams<br>• Activity diagrams<br>• Sequence diagrams<br>• State Machine diagrams<br>• Package diagrams |
+| **FR-22** | The tool **shall** support SysML v2 file formats including:<br>• `.sysml` (textual representation)<br>• `.kerml` (KerML files)<br>• `.json` (SysML v2 API JSON format)<br>• `.sysmlv2` (alternative textual syntax) |
+| **FR-23** | SysML v2 diagrams **shall** be rendered as embedded images (SVG, PNG, or PDF) in output documents |
+| **FR-24** | The tool **shall** extract and present SysML v2 model element properties, including:<br>• Requirements (ID, text, verification method)<br>• Use Cases (actors, scenarios, preconditions/postconditions)<br>• Blocks (ports, properties, constraints, operations)<br>• Interactions (lifelines, messages, timing constraints) |
+| **FR-25** | SysML v2 import **shall** produce deterministic output (byte-for-byte identical) when given the same model across all supported file formats |
 
 ### 2.8 Portability
 

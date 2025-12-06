@@ -3,7 +3,7 @@
 
 package StakeholderRequirements {
     
-    import ScalarValues::*;
+    public import ScalarValues::*;
     
     // Stakeholder needs and expectations
     requirement def StakeholderNeed {
@@ -26,9 +26,9 @@ package StakeholderRequirements {
         **Rationale**: Minimal downtime is critical for business continuity.
         */
         
-        attribute priority = "High";
-        attribute source = "Chief Operations Officer";
-        attribute rationale = "Minimal downtime is critical for business continuity";
+        attribute :>> priority = "High";
+        attribute :>> source = "Chief Operations Officer";
+        attribute :>> rationale = "Minimal downtime is critical for business continuity";
     }
     
     requirement STK_REQ_002 : StakeholderNeed {
@@ -42,9 +42,9 @@ package StakeholderRequirements {
         **Rationale**: Reduce training costs and improve user adoption.
         */
         
-        attribute priority = "Medium";
-        attribute source = "End User Representative";
-        attribute rationale = "Reduce training costs and improve user adoption";
+        attribute :>> priority = "Medium";
+        attribute :>> source = "End User Representative";
+        attribute :>> rationale = "Reduce training costs and improve user adoption";
     }
     
     requirement STK_REQ_003 : StakeholderNeed {
@@ -58,9 +58,9 @@ package StakeholderRequirements {
         **Rationale**: Compliance with data protection regulations and customer trust.
         */
         
-        attribute priority = "Critical";
-        attribute source = "Chief Information Security Officer";
-        attribute rationale = "Compliance with data protection regulations";
+        attribute :>> priority = "Critical";
+        attribute :>> source = "Chief Information Security Officer";
+        attribute :>> rationale = "Compliance with data protection regulations";
     }
     
     requirement STK_REQ_004 : StakeholderNeed {
@@ -74,8 +74,8 @@ package StakeholderRequirements {
         **Rationale**: Support business growth over 5-year horizon.
         */
         
-        attribute priority = "High";
-        attribute source = "Chief Technology Officer";
-        attribute rationale = "Support business growth over 5-year horizon";
+        attribute :>> priority = "High";
+        attribute :>> source = "Chief Technology Officer";
+        attribute :>> rationale = "Support business growth over 5-year horizon";
     }
 }

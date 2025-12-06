@@ -3,11 +3,11 @@
 
 package SystemBehavior {
     
-    import SystemArchitecture::*;
-    import ScalarValues::*;
+    public import SystemArchitecture::*;
+    public import ScalarValues::*;
     
     // Document generation workflow
-    interaction DocumentGenerationWorkflow {
+    action def DocumentGenerationWorkflow {
         doc /*
         **Document Generation Workflow**
         
@@ -16,22 +16,22 @@ package SystemBehavior {
         */
         
         // Participants (lifelines)
-        participant user : User;
-        participant api : RestApiPort;
-        participant importSys : ImportSubsystem;
-        participant processSys : ProcessingSubsystem;
-        participant exportSys : ExportSubsystem;
-        participant storage : StorageSubsystem;
+        part user : User;
+        part api : RestApiPort;
+        part importSys : ImportSubsystem;
+        part processSys : ProcessingSubsystem;
+        part exportSys : ExportSubsystem;
+        part storage : StorageSubsystem;
         
         // Message sequence
-        message start from user to api {
+        message startRequest from user to api {
             doc /* User initiates document generation request */
         }
         
         message submitDocument from api to importSys {
             doc /* API submits document for import */
             
-            attribute payload : DocumentPayload;
+            attribute documentPayload : DocumentPayload;
             attribute format : String;
         }
         
@@ -86,7 +86,7 @@ package SystemBehavior {
         constraint responseTime {
             doc /* Total workflow must complete within 10 seconds */
             
-            first start;
+            first startRequest;
             then deliverResult;
             
             attribute maxDuration : Real = 10.0; // seconds
@@ -94,16 +94,16 @@ package SystemBehavior {
     }
     
     // Error handling sequence
-    interaction ErrorHandlingWorkflow {
+    action def ErrorHandlingWorkflow {
         doc /*
         **Error Handling Workflow**
         
         Demonstrates exception handling when import fails.
         */
         
-        participant user : User;
-        participant api : RestApiPort;
-        participant importSys : ImportSubsystem;
+        part user : User;
+        part api : RestApiPort;
+        part importSys : ImportSubsystem;
         
         message submitInvalidDocument from user to api;
         
@@ -123,21 +123,21 @@ package SystemBehavior {
     }
     
     // Concurrent processing sequence
-    interaction ParallelProcessing {
+    action def ParallelProcessing {
         doc /*
         **Parallel Processing Workflow**
         
         Shows concurrent processing of multiple documents.
         */
         
-        participant scheduler : ProcessScheduler;
-        participant worker1 : ProcessingWorker;
-        participant worker2 : ProcessingWorker;
-        participant worker3 : ProcessingWorker;
+        part scheduler : ProcessScheduler;
+        part worker1 : ProcessingWorker;
+        part worker2 : ProcessingWorker;
+        part worker3 : ProcessingWorker;
         
-        message distributeWork from scheduler to worker1;
-        message distributeWork from scheduler to worker2;
-        message distributeWork from scheduler to worker3;
+        message distributeWork1 from scheduler to worker1;
+        message distributeWork2 from scheduler to worker2;
+        message distributeWork3 from scheduler to worker3;
         
         // Parallel execution
         par {
@@ -146,9 +146,9 @@ package SystemBehavior {
             message processDoc3 from worker3 to worker3;
         }
         
-        message reportComplete from worker1 to scheduler;
-        message reportComplete from worker2 to scheduler;
-        message reportComplete from worker3 to scheduler;
+        message reportComplete1 from worker1 to scheduler;
+        message reportComplete2 from worker2 to scheduler;
+        message reportComplete3 from worker3 to scheduler;
         
         message aggregateResults from scheduler to scheduler;
     }

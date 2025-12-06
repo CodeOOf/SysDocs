@@ -316,103 +316,55 @@ This matrix provides a complete view of each requirement:
 
 ---
 
-### FR-20: Import SysML v2 Requirements
+### FR-20: Import SysML v2 Models
 **Category**: SysML v2 Integration  
-**Requirement**: Import SysML v2 Requirements and map to Stakeholder/System Requirements documentation  
+**Requirement**: Import SysML v2 models, preserving traceability links and element relationships  
 **Implementation**: Pending - `src/SysDocs.Core/Importers/SysML/`  
-**Format Support**: `.sysml`, `.kerml`, `.json` (SysML v2 API format)  
+**Core Capability**: Parse SysML v2 models and extract all model elements with relationships  
 **Tests**: ✅ Has test structure (skipped pending implementation)  
 **Test Class**: `tests/SysDocs.Tests/Integration/SysML/FR20_FR21_SysMLRequirementsUseCasesTests.cs`  
-**Test Cases**: TC-01, TC-02, TC-05, TC-06, TC-07  
+**Test Cases**: TC-01, TC-02, TC-05, TC-07  
 **Deviations**: None  
 **Verification**:
-- Import tests for stakeholder requirements
-- Import tests for system requirements
-- Traceability preservation validation
-- Format support verification (.sysml, .kerml, .json)
-- Deterministic output validation
+- Model import from all supported formats
+- Element extraction validation
+- Relationship preservation
+- Traceability link extraction
+- Cross-element references maintained
 
 ---
 
-### FR-21: Import SysML v2 Use Cases
+### FR-21: Support SysML v2 Diagram Types
 **Category**: SysML v2 Integration  
-**Requirement**: Import SysML v2 Use Cases and map to Stakeholder/System Requirements documentation  
+**Requirement**: Support SysML v2 diagram types including Requirements, Use Case, BDD, IBD, Parametric, Activity, Sequence, State Machine, and Package diagrams  
 **Implementation**: Pending - `src/SysDocs.Core/Importers/SysML/`  
-**Related**: FR-20 (SysML Requirements)  
-**Tests**: ✅ Has test structure (skipped pending implementation)  
-**Test Class**: `tests/SysDocs.Tests/Integration/SysML/FR20_FR21_SysMLRequirementsUseCasesTests.cs`  
-**Test Cases**: TC-03, TC-04  
-**Deviations**: None  
-**Verification**:
-- Import tests for stakeholder use cases
-- Import tests for system use cases
-- Actor and scenario extraction validation
-- Precondition/postcondition preservation
-
----
-
-### FR-22: Import SysML v2 Block Diagrams
-**Category**: SysML v2 Integration  
-**Requirement**: Import SysML v2 Block Diagrams and map to System Architecture/Detailed Design documentation  
-**Implementation**: Pending - `src/SysDocs.Core/Importers/SysML/`  
-**Output**: Embedded diagram images (SVG/PNG) + structural descriptions  
+**Diagram Types**: 9 core SysML v2 diagram types per OMG specification  
 **Tests**: ✅ Has test structure (skipped pending implementation)  
 **Test Class**: `tests/SysDocs.Tests/Integration/SysML/FR22_FR23_SysMLDiagramsTests.cs`  
-**Test Cases**: TC-01, TC-02, TC-03, TC-07, TC-08, TC-09  
+**Test Cases**: TC-01 through TC-09  
 **Deviations**: None  
 **Verification**:
-- Block diagram import as system architecture
-- Block diagram import as detailed design
-- Block relationship extraction
-- Port connection extraction
-- Diagram-to-requirement traceability
-- Diagram image generation
+- Requirements diagram import
+- Use Case diagram import
+- Block Definition diagram (BDD) import
+- Internal Block diagram (IBD) import
+- Parametric diagram import
+- Activity diagram import
+- Sequence diagram import
+- State Machine diagram import
+- Package diagram import
 
 ---
 
-### FR-23: Import SysML v2 Sequence Diagrams
-**Category**: SysML v2 Integration  
-**Requirement**: Import SysML v2 Sequence Diagrams and map to System Architecture/Detailed Design documentation  
-**Implementation**: Pending - `src/SysDocs.Core/Importers/SysML/`  
-**Output**: Embedded sequence diagrams + interaction specifications  
-**Tests**: ✅ Has test structure (skipped pending implementation)  
-**Test Class**: `tests/SysDocs.Tests/Integration/SysML/FR22_FR23_SysMLDiagramsTests.cs`  
-**Test Cases**: TC-04, TC-05, TC-06, TC-08  
-**Deviations**: None  
-**Verification**:
-- Sequence diagram import as system architecture (behavioral view)
-- Sequence diagram import as detailed design (interaction specifications)
-- Message sequence extraction
-- Timing constraint extraction
-- Deterministic diagram output
-
----
-
-### FR-24: SysML v2 Traceability Preservation
-**Category**: SysML v2 Integration + Traceability  
-**Requirement**: Preserve traceability links between requirements, use cases, and design elements from SysML v2  
-**Implementation**: Pending - Part of SysML v2 importer infrastructure  
-**Trace Relations**: "satisfies", "refines", "derives", "verifies", "realizes"  
-**Tests**: ✅ Has test structure (skipped pending implementation)  
-**Test Class**: Multiple test classes  
-**Test Cases**: FR20_FR21 TC-05, FR22_FR23 TC-07  
-**Deviations**: None  
-**Verification**:
-- Traceability link extraction from SysML v2
-- Bidirectional traceability validation
-- Cross-element traceability (requirements ↔ design)
-- Traceability preservation in output documents
-
----
-
-### FR-25: SysML v2 File Format Support
+### FR-22: Support SysML v2 File Formats
 **Category**: SysML v2 Integration + Input Handling  
-**Requirement**: Support SysML v2 file formats including .sysml (textual), .kerml (KerML), and .json (API format)  
+**Requirement**: Support SysML v2 file formats including .sysml (textual), .kerml (KerML), .json (API format), and .sysmlv2  
 **Implementation**: Pending - Multi-format parser infrastructure  
 **Format Support**:  
 - `.sysml` - SysML v2 textual syntax  
 - `.kerml` - Kernel Modeling Language  
 - `.json` - SysML v2 API JSON format  
+- `.sysmlv2` - Alternative textual syntax  
 **Tests**: ✅ Has test structure (skipped pending implementation)  
 **Test Class**: `tests/SysDocs.Tests/Integration/SysML/FR20_FR21_SysMLRequirementsUseCasesTests.cs`  
 **Test Cases**: TC-06  
@@ -420,7 +372,60 @@ This matrix provides a complete view of each requirement:
 **Verification**:
 - Parse tests for each format
 - Equivalent content validation (same model, different formats)
-- Deterministic output across formats
+- Format auto-detection capability
+
+---
+
+### FR-23: Render SysML v2 Diagrams
+**Category**: SysML v2 Integration + Output  
+**Requirement**: SysML v2 diagrams shall be rendered as embedded images (SVG, PNG, or PDF) in output documents  
+**Implementation**: Pending - Diagram rendering engine  
+**Output Formats**: SVG (preferred), PNG, PDF  
+**Tests**: ✅ Has test structure (skipped pending implementation)  
+**Test Class**: `tests/SysDocs.Tests/Integration/SysML/FR22_FR23_SysMLDiagramsTests.cs`  
+**Test Cases**: TC-08, TC-09  
+**Deviations**: None  
+**Verification**:
+- SVG diagram generation
+- PNG diagram generation (fallback)
+- PDF diagram embedding
+- Diagram quality validation
+- Deterministic rendering
+
+---
+
+### FR-24: Extract SysML v2 Element Properties
+**Category**: SysML v2 Integration  
+**Requirement**: Extract and present SysML v2 model element properties (Requirements, Use Cases, Blocks, Interactions)  
+**Implementation**: Pending - Element property extractors  
+**Property Categories**: Requirements attributes, Use Case details, Block specifications, Interaction details  
+**Tests**: ✅ Has test structure (skipped pending implementation)  
+**Test Class**: Multiple test classes  
+**Test Cases**: FR20_FR21 TC-01 through TC-04, FR22_FR23 TC-03, TC-06  
+**Deviations**: None  
+**Verification**:
+- Requirements: ID, text, verification method extraction
+- Use Cases: actors, scenarios, preconditions/postconditions extraction
+- Blocks: ports, properties, constraints, operations extraction
+- Interactions: lifelines, messages, timing constraints extraction
+- Property presentation in output documents
+
+---
+
+### FR-25: Deterministic SysML v2 Output
+**Category**: SysML v2 Integration + Determinism  
+**Requirement**: SysML v2 import shall produce deterministic output (byte-for-byte identical) across all supported file formats  
+**Implementation**: Pending - Extends FR-06 determinism to SysML v2 workflows  
+**Related**: FR-06 (Determinism), NFR-01 (Reproducibility), FR-14 (Cross-platform)  
+**Tests**: ✅ Has test structure (skipped pending implementation)  
+**Test Class**: Multiple test classes  
+**Test Cases**: FR20_FR21 TC-07, FR22_FR23 TC-08  
+**Deviations**: None  
+**Verification**:
+- Determinism tests (repeated imports with same model)
+- Cross-format determinism (.sysml, .kerml, .json produce identical output)
+- Cross-platform determinism (Linux, Windows, macOS)
+- Hash comparison with expected results
 
 ---
 

@@ -3,7 +3,7 @@
 
 package SystemArchitecture {
     
-    import ScalarValues::*;
+    private import ScalarValues::*;
     
     // Main system block
     part def DocumentationSystem {

@@ -3,8 +3,8 @@
 
 package SystemRequirements {
     
-    import ScalarValues::*;
-    import StakeholderRequirements::*;
+    private import ScalarValues::*;
+    private import StakeholderRequirements::*;
     
     // System-level requirements with verification methods
     requirement def SystemRequirement {
@@ -25,8 +25,8 @@ package SystemRequirements {
         **Verification Criteria**: Continuous monitoring over 30-day period shows >= 99.9% availability
         */
         
-        attribute verificationMethod = "Test";
-        attribute verificationCriteria = "30-day monitoring >= 99.9% availability";
+        attribute :>> verificationMethod = "Test";
+        attribute :>> verificationCriteria = "30-day monitoring >= 99.9% availability";
         
         // Traceability to stakeholder requirement
         satisfy STK_REQ_001;
@@ -42,8 +42,8 @@ package SystemRequirements {
         **Verification Criteria**: 95th percentile response time <= 2.0 seconds
         */
         
-        attribute verificationMethod = "Test";
-        attribute verificationCriteria = "95th percentile response time <= 2.0 seconds";
+        attribute :>> verificationMethod = "Test";
+        attribute :>> verificationCriteria = "95th percentile response time <= 2.0 seconds";
         
         satisfy STK_REQ_002;
     }
@@ -58,8 +58,8 @@ package SystemRequirements {
         **Verification Criteria**: Code review confirms MFA implementation; penetration testing validates security
         */
         
-        attribute verificationMethod = "Inspection and Test";
-        attribute verificationCriteria = "Code review + penetration test";
+        attribute :>> verificationMethod = "Inspection and Test";
+        attribute :>> verificationCriteria = "Code review + penetration test";
         
         satisfy STK_REQ_003;
     }
@@ -74,8 +74,8 @@ package SystemRequirements {
         **Verification Criteria**: Configuration review confirms AES-256 and TLS 1.3
         */
         
-        attribute verificationMethod = "Inspection";
-        attribute verificationCriteria = "Configuration audit";
+        attribute :>> verificationMethod = "Inspection";
+        attribute :>> verificationCriteria = "Configuration audit";
         
         satisfy STK_REQ_003;
     }
@@ -90,8 +90,8 @@ package SystemRequirements {
         **Verification Criteria**: Load test demonstrates linear scaling from 1K to 100K users
         */
         
-        attribute verificationMethod = "Test";
-        attribute verificationCriteria = "Load test 1K-100K users";
+        attribute :>> verificationMethod = "Test";
+        attribute :>> verificationCriteria = "Load test 1K-100K users";
         
         satisfy STK_REQ_004;
     }
@@ -106,8 +106,8 @@ package SystemRequirements {
         **Verification Criteria**: Failover test completes within 30 seconds
         */
         
-        attribute verificationMethod = "Test";
-        attribute verificationCriteria = "Failover < 30 seconds";
+        attribute :>> verificationMethod = "Test";
+        attribute :>> verificationCriteria = "Failover < 30 seconds";
         
         satisfy STK_REQ_001;
     }

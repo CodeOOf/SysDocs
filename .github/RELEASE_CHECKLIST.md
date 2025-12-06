@@ -152,26 +152,49 @@
   - [ ] Extract blocks, ports, properties
   - [ ] Extract relationships (composition, association, generalization)
   - [ ] Generate diagram images (SVG/PNG)
-- [ ] Implement Sequence Diagram importer (FR-23)
-  - [ ] Map to System Architecture (behavioral view)
-  - [ ] Map to Detailed Design (interaction specifications)
-  - [ ] Extract lifelines and messages
-  - [ ] Extract timing constraints
-  - [ ] Generate sequence diagram images
-- [ ] Implement Traceability preservation (FR-24)
-  - [ ] Extract trace links (satisfy, refine, derive, verify, realize)
-  - [ ] Maintain bidirectional traceability
-  - [ ] Generate traceability matrices
-- [ ] Format support verification (FR-25)
-  - [ ] Verify .sysml parsing
-  - [ ] Verify .kerml parsing
-  - [ ] Verify .json parsing
-  - [ ] Ensure equivalent models produce identical output
+#### SysML v2 Integration (FR-20, FR-21, FR-22, FR-23, FR-24, FR-25)
+- [ ] Implement SysML v2 parser infrastructure (FR-20)
+  - [ ] Parse `.sysml` (textual) format (FR-22)
+  - [ ] Parse `.kerml` (KerML) format (FR-22)
+  - [ ] Parse `.json` (SysML v2 API) format (FR-22)
+  - [ ] Parse `.sysmlv2` (alternative textual) format (FR-22)
+  - [ ] Format auto-detection
+  - [ ] Build internal model representation
+  - [ ] Extract all model elements (requirements, use cases, blocks, interactions, states, activities, parameters, packages)
+  - [ ] Preserve all traceability relationships (satisfy, refine, derive, verify, realize, compose, associate, generalize)
+- [ ] Implement diagram support (FR-21)
+  - [ ] Requirements diagram rendering
+  - [ ] Use Case diagram rendering
+  - [ ] Block Definition diagram (BDD) rendering
+  - [ ] Internal Block diagram (IBD) rendering
+  - [ ] Parametric diagram rendering
+  - [ ] Activity diagram rendering
+  - [ ] Sequence diagram rendering
+  - [ ] State Machine diagram rendering
+  - [ ] Package diagram rendering
+- [ ] Implement diagram rendering engine (FR-23)
+  - [ ] SVG generation (preferred)
+  - [ ] PNG generation (fallback)
+  - [ ] PDF embedding
+  - [ ] Configurable sizing and resolution
+  - [ ] Deterministic layout algorithms
+- [ ] Implement property extraction (FR-24)
+  - [ ] Requirements properties (ID, text, verification method, traceability)
+  - [ ] Use Case properties (actors, scenarios, conditions)
+  - [ ] Block properties (ports, properties, constraints, operations)
+  - [ ] Interaction properties (lifelines, messages, timing)
+  - [ ] Tabular output formatters
+  - [ ] Traceability matrix generation
+- [ ] Ensure deterministic output (FR-25)
+  - [ ] Normalize diagram layouts
+  - [ ] Stable element ordering
+  - [ ] Remove timestamps
+  - [ ] Cross-format equivalence
 - [ ] Remove `Skip` from all SysML tests (16 tests total)
   - [ ] `FR20_FR21_SysMLRequirementsUseCasesTests.cs` (7 tests)
   - [ ] `FR22_FR23_SysMLDiagramsTests.cs` (9 tests)
 - [ ] Create expected results for SysML v2 test fixtures
-- [ ] Verify SysML v2 deterministic output
+- [ ] Verify SysML v2 deterministic output across formats
 
 #### Performance (NFR-03)
 - [ ] Test on Linux (primary)
