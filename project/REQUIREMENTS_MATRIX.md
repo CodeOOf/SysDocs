@@ -316,6 +316,114 @@ This matrix provides a complete view of each requirement:
 
 ---
 
+### FR-20: Import SysML v2 Requirements
+**Category**: SysML v2 Integration  
+**Requirement**: Import SysML v2 Requirements and map to Stakeholder/System Requirements documentation  
+**Implementation**: Pending - `src/SysDocs.Core/Importers/SysML/`  
+**Format Support**: `.sysml`, `.kerml`, `.json` (SysML v2 API format)  
+**Tests**: ✅ Has test structure (skipped pending implementation)  
+**Test Class**: `tests/SysDocs.Tests/Integration/SysML/FR20_FR21_SysMLRequirementsUseCasesTests.cs`  
+**Test Cases**: TC-01, TC-02, TC-05, TC-06, TC-07  
+**Deviations**: None  
+**Verification**:
+- Import tests for stakeholder requirements
+- Import tests for system requirements
+- Traceability preservation validation
+- Format support verification (.sysml, .kerml, .json)
+- Deterministic output validation
+
+---
+
+### FR-21: Import SysML v2 Use Cases
+**Category**: SysML v2 Integration  
+**Requirement**: Import SysML v2 Use Cases and map to Stakeholder/System Requirements documentation  
+**Implementation**: Pending - `src/SysDocs.Core/Importers/SysML/`  
+**Related**: FR-20 (SysML Requirements)  
+**Tests**: ✅ Has test structure (skipped pending implementation)  
+**Test Class**: `tests/SysDocs.Tests/Integration/SysML/FR20_FR21_SysMLRequirementsUseCasesTests.cs`  
+**Test Cases**: TC-03, TC-04  
+**Deviations**: None  
+**Verification**:
+- Import tests for stakeholder use cases
+- Import tests for system use cases
+- Actor and scenario extraction validation
+- Precondition/postcondition preservation
+
+---
+
+### FR-22: Import SysML v2 Block Diagrams
+**Category**: SysML v2 Integration  
+**Requirement**: Import SysML v2 Block Diagrams and map to System Architecture/Detailed Design documentation  
+**Implementation**: Pending - `src/SysDocs.Core/Importers/SysML/`  
+**Output**: Embedded diagram images (SVG/PNG) + structural descriptions  
+**Tests**: ✅ Has test structure (skipped pending implementation)  
+**Test Class**: `tests/SysDocs.Tests/Integration/SysML/FR22_FR23_SysMLDiagramsTests.cs`  
+**Test Cases**: TC-01, TC-02, TC-03, TC-07, TC-08, TC-09  
+**Deviations**: None  
+**Verification**:
+- Block diagram import as system architecture
+- Block diagram import as detailed design
+- Block relationship extraction
+- Port connection extraction
+- Diagram-to-requirement traceability
+- Diagram image generation
+
+---
+
+### FR-23: Import SysML v2 Sequence Diagrams
+**Category**: SysML v2 Integration  
+**Requirement**: Import SysML v2 Sequence Diagrams and map to System Architecture/Detailed Design documentation  
+**Implementation**: Pending - `src/SysDocs.Core/Importers/SysML/`  
+**Output**: Embedded sequence diagrams + interaction specifications  
+**Tests**: ✅ Has test structure (skipped pending implementation)  
+**Test Class**: `tests/SysDocs.Tests/Integration/SysML/FR22_FR23_SysMLDiagramsTests.cs`  
+**Test Cases**: TC-04, TC-05, TC-06, TC-08  
+**Deviations**: None  
+**Verification**:
+- Sequence diagram import as system architecture (behavioral view)
+- Sequence diagram import as detailed design (interaction specifications)
+- Message sequence extraction
+- Timing constraint extraction
+- Deterministic diagram output
+
+---
+
+### FR-24: SysML v2 Traceability Preservation
+**Category**: SysML v2 Integration + Traceability  
+**Requirement**: Preserve traceability links between requirements, use cases, and design elements from SysML v2  
+**Implementation**: Pending - Part of SysML v2 importer infrastructure  
+**Trace Relations**: "satisfies", "refines", "derives", "verifies", "realizes"  
+**Tests**: ✅ Has test structure (skipped pending implementation)  
+**Test Class**: Multiple test classes  
+**Test Cases**: FR20_FR21 TC-05, FR22_FR23 TC-07  
+**Deviations**: None  
+**Verification**:
+- Traceability link extraction from SysML v2
+- Bidirectional traceability validation
+- Cross-element traceability (requirements ↔ design)
+- Traceability preservation in output documents
+
+---
+
+### FR-25: SysML v2 File Format Support
+**Category**: SysML v2 Integration + Input Handling  
+**Requirement**: Support SysML v2 file formats including .sysml (textual), .kerml (KerML), and .json (API format)  
+**Implementation**: Pending - Multi-format parser infrastructure  
+**Format Support**:  
+- `.sysml` - SysML v2 textual syntax  
+- `.kerml` - Kernel Modeling Language  
+- `.json` - SysML v2 API JSON format  
+**Tests**: ✅ Has test structure (skipped pending implementation)  
+**Test Class**: `tests/SysDocs.Tests/Integration/SysML/FR20_FR21_SysMLRequirementsUseCasesTests.cs`  
+**Test Cases**: TC-06  
+**Deviations**: None  
+**Verification**:
+- Parse tests for each format
+- Equivalent content validation (same model, different formats)
+- Deterministic output across formats
+
+---
+
 ## Non-Functional Requirements
 
 ### NFR-01: 100% reproducible output
@@ -573,7 +681,7 @@ dotnet run --project tests/SysDocs.Tests -- --traceability
 ```
 
 Then check [reports/TEST_TRACEABILITY.md](reports/TEST_TRACEABILITY.md) for:
-- Total requirements: 35 (FR-01 to FR-19, NFR-01 to NFR-07, C-01 to C-04, BR-01 to BR-05)
+- Total requirements: 41 (FR-01 to FR-25, NFR-01 to NFR-07, C-01 to C-04, BR-01 to BR-05)
 - Requirements with automated tests
 - Requirements with manual verification only
 - Requirements without tests

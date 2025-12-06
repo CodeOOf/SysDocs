@@ -60,7 +60,18 @@ SysDocs provides an automated, deterministic, and portable documentation pipelin
 | **FR-18** | The tool **shall** compose a single formal document from multiple source files, maintaining section order and renumbering as specified in the manifest |
 | **FR-19** | Manifest-based assembly **shall** produce deterministic output (byte-for-byte identical) when given the same inputs and manifest configuration |
 
-### 2.7 Portability
+### 2.7 SysML v2 Integration
+
+| ID | Requirement |
+|----|-------------|
+| **FR-20** | The tool **shall** import SysML v2 Requirements and map them to:<br>• Stakeholder Requirements documentation<br>• System Requirements documentation |
+| **FR-21** | The tool **shall** import SysML v2 Use Cases and map them to:<br>• Stakeholder Requirements documentation<br>• System Requirements documentation |
+| **FR-22** | The tool **shall** import SysML v2 Block Diagrams and map them to:<br>• System Architecture documentation<br>• Detailed Design documentation |
+| **FR-23** | The tool **shall** import SysML v2 Sequence Diagrams and map them to:<br>• System Architecture documentation (behavioral view)<br>• Detailed Design documentation (interaction specifications) |
+| **FR-24** | SysML v2 import **shall** preserve traceability links between requirements, use cases, and design elements |
+| **FR-25** | The tool **shall** support SysML v2 file formats including:<br>• `.sysml` (textual representation)<br>• `.kerml` (KerML files)<br>• `.json` (SysML v2 API JSON format) |
+
+### 2.8 Portability
 
 | ID | Requirement |
 |----|-------------|
@@ -121,11 +132,11 @@ SysDocs provides an automated, deterministic, and portable documentation pipelin
 
 | Category | Count | IDs |
 |----------|-------|-----|
-| **Functional Requirements** | 19 | FR-01 to FR-19 |
+| **Functional Requirements** | 25 | FR-01 to FR-25 |
 | **Non-Functional Requirements** | 7 | NFR-01 to NFR-07 |
 | **Constraints** | 4 | C-01 to C-04 |
 | **Build Requirements** | 5 | BR-01 to BR-05 |
-| **Total Requirements** | **35** | |
+| **Total Requirements** | **41** | |
 
 ---
 

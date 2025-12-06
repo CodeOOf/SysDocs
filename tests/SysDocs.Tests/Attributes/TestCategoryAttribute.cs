@@ -30,4 +30,6 @@ public static class TestCategories
     public const string Performance = "Performance";
     public const string FileFormat = "FileFormat";
     public const string Manifest = "Manifest";
+    public const string SysML = "SysML";
+    public const string Traceability = "Traceability";
 }

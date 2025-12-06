@@ -118,6 +118,62 @@
 - [ ] Remove `Skip` from `GitIntegrationTests.cs` (3 tests)
 
 #### Cross-Platform Determinism (FR-14)
+- [ ] Test on Windows 10, Windows 11
+- [ ] Test on Linux (Fedora, Debian, Ubuntu)
+- [ ] Test on macOS
+- [ ] Verify identical output across all platforms
+- [ ] Remove `Skip` from `FR14_CrossPlatformDeterminismTests.cs`
+
+#### Manifest-Based Assembly (FR-16, FR-17, FR-18, FR-19)
+- [ ] Implement `ManifestReader.cs` - Parse JSON manifests
+- [ ] Implement `SectionExtractor.cs` - Extract sections by heading patterns
+- [ ] Implement `DocumentComposer.cs` - Compose multi-file documents
+- [ ] Add section renumbering logic
+- [ ] Ensure manifest-based determinism
+- [ ] Remove `Skip` from `FR16_ManifestBasedAssemblyTests.cs` (10 tests)
+- [ ] Generate expected results for both example projects
+
+#### SysML v2 Integration (FR-20, FR-21, FR-22, FR-23, FR-24, FR-25)
+- [ ] Implement SysML v2 parser infrastructure
+- [ ] Add `.sysml` (textual) parser
+- [ ] Add `.kerml` (KerML) parser  
+- [ ] Add `.json` (SysML v2 API) parser
+- [ ] Implement Requirements importer (FR-20)
+  - [ ] Map to Stakeholder Requirements
+  - [ ] Map to System Requirements
+  - [ ] Extract requirement attributes (ID, text, priority, verification method)
+- [ ] Implement Use Case importer (FR-21)
+  - [ ] Map to Stakeholder Requirements
+  - [ ] Map to System Requirements
+  - [ ] Extract actors, preconditions, postconditions
+- [ ] Implement Block Diagram importer (FR-22)
+  - [ ] Map to System Architecture
+  - [ ] Map to Detailed Design
+  - [ ] Extract blocks, ports, properties
+  - [ ] Extract relationships (composition, association, generalization)
+  - [ ] Generate diagram images (SVG/PNG)
+- [ ] Implement Sequence Diagram importer (FR-23)
+  - [ ] Map to System Architecture (behavioral view)
+  - [ ] Map to Detailed Design (interaction specifications)
+  - [ ] Extract lifelines and messages
+  - [ ] Extract timing constraints
+  - [ ] Generate sequence diagram images
+- [ ] Implement Traceability preservation (FR-24)
+  - [ ] Extract trace links (satisfy, refine, derive, verify, realize)
+  - [ ] Maintain bidirectional traceability
+  - [ ] Generate traceability matrices
+- [ ] Format support verification (FR-25)
+  - [ ] Verify .sysml parsing
+  - [ ] Verify .kerml parsing
+  - [ ] Verify .json parsing
+  - [ ] Ensure equivalent models produce identical output
+- [ ] Remove `Skip` from all SysML tests (16 tests total)
+  - [ ] `FR20_FR21_SysMLRequirementsUseCasesTests.cs` (7 tests)
+  - [ ] `FR22_FR23_SysMLDiagramsTests.cs` (9 tests)
+- [ ] Create expected results for SysML v2 test fixtures
+- [ ] Verify SysML v2 deterministic output
+
+#### Performance (NFR-03)
 - [ ] Test on Linux (primary)
 - [ ] Test on Windows (via Docker)
 - [ ] Test on macOS (via Docker)
@@ -191,7 +247,7 @@
 ### Final Verification
 
 #### Requirements Coverage
-- [ ] All 19 Functional Requirements (FR-01 to FR-19) implemented
+- [ ] All 25 Functional Requirements (FR-01 to FR-25) implemented
 - [ ] All 7 Non-Functional Requirements (NFR-01 to NFR-07) verified
 - [ ] All 4 Constraints (C-01 to C-04) validated
 - [ ] All 5 Build Requirements (BR-01 to BR-05) met
