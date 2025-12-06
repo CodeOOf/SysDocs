@@ -1,0 +1,24 @@
+Term,Definition,Source,Related Terms
+ADNS,Autonomous Drone Navigation System,Project Acronym,"UAV, Drone"
+AGL,Above Ground Level - altitude measured from ground surface,Aviation Standard,MSL
+ASIL,Automotive Safety Integrity Level - ISO 26262 safety classification,ISO 26262,"SIL, DAL"
+COA,Certificate of Authorization - FAA approval for drone operations,FAA Regulation,Part 107
+ConOps,Concept of Operations - describes system usage in operational environment,IEEE 1362,"Use Case, Scenario"
+DO-178C,Software Considerations in Airborne Systems and Equipment Certification,RTCA Standard,"ED-12C, Software Certification"
+EKF,Extended Kalman Filter - state estimation algorithm for nonlinear systems,Control Theory,"KF, UKF"
+FAA,Federal Aviation Administration - US aviation regulatory authority,US Government,EASA
+FMEA,Failure Modes and Effects Analysis - systematic failure analysis method,MIL-STD-1629,"FMECA, FTA"
+FPS,Frames Per Second - video/image processing rate,Computer Vision,"Hz, Sample Rate"
+GPS,Global Positioning System - satellite navigation system,Navigation,"GNSS, Localization"
+HIL,Hardware-in-the-Loop - testing with real hardware and simulated environment,Test Engineering,"SIL, MIL"
+IMU,Inertial Measurement Unit - sensor measuring acceleration and rotation,Sensor Technology,"Gyro, Accelerometer"
+LiDAR,Light Detection and Ranging - distance measurement using laser pulses,Sensor Technology,"Laser Scanner, 3D Sensor"
+MTBF,Mean Time Between Failures - reliability metric,Reliability Engineering,"MTTF, Availability"
+ROS2,Robot Operating System 2 - middleware for robotics software,Open Source,"ROS, Middleware"
+RPN,Risk Priority Number - FMEA risk metric (Severity × Occurrence × Detection),FMEA,"Risk Score, Criticality"
+RTM,Requirements Traceability Matrix - maps requirements to design and tests,Systems Engineering,"Trace, Verification Matrix"
+SLAM,Simultaneous Localization and Mapping - algorithm for building maps while localizing,Robotics,"Mapping, Localization"
+StRS,Stakeholder Requirements Specification - captures stakeholder needs,ISO/IEC 29148,"SRS, Requirements"
+SyRS,System Requirements Specification - defines system-level requirements,ISO/IEC 29148,"SRS, Requirements"
+UAV,Unmanned Aerial Vehicle - aircraft without human pilot onboard,Aviation,"Drone, UAS"
+VIO,Visual-Inertial Odometry - motion estimation using camera and IMU,Computer Vision,"VO, Odometry"

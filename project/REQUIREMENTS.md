@@ -27,13 +27,13 @@ SysDocs provides an automated, deterministic, and portable documentation pipelin
 |----|-------------|
 | **FR-04** | The tool **shall** produce PDF (`.pdf`) output as the primary supported export format |
 | **FR-05** | The tool **shall** support custom document templates including:<br>• Watermarks<br>• Title pages<br>• Headers and footers<br>• Organizational branding and formatting rules |
-| **FR-06** | Generated PDFs **must** be deterministic, producing byte-for-byte identical output for the same inputs across all platforms (Windows 10+11, Linux distributions, macOS) |
+| **FR-06** | Generated PDFs **must** be deterministic, producing byte-for-byte identical output for the same inputs across all execution environments |
 
 ### 2.3 Determinism & Qualification
 
 | ID | Requirement |
 |----|-------------|
-| **FR-07** | The tool **shall** ensure identical text, images, ordering, metadata, and layout across all platforms and environments |
+| **FR-07** | The tool **shall** ensure identical text, images, ordering, metadata, and layout across all execution environments |
 | **FR-08** | The tool **shall** generate a change and trace report showing:<br>• Input files<br>• Transformations performed<br>• Differences from prior versions<br>• Any structural or template changes |
 | **FR-09** | SysDocs **shall** provide mechanisms supporting tool qualification, including logs, version tracking, and validation steps |
 
@@ -55,7 +55,7 @@ SysDocs provides an automated, deterministic, and portable documentation pipelin
 
 | ID | Requirement |
 |----|-------------|
-| **FR-14** | SysDocs **shall** run identically across:<br>• Windows<br>• Linux<br>• macOS |
+| **FR-14** | SysDocs **shall** execute with identical behavior across Windows, Linux, and macOS platforms |
 | **FR-15** | The tool **must** be implemented using a Long-Term Support (LTS) platform version |
 
 ## 3. Non-Functional Requirements
@@ -64,7 +64,7 @@ SysDocs provides an automated, deterministic, and portable documentation pipelin
 
 | ID | Requirement |
 |----|-------------|
-| **NFR-01** | Output **must** be 100% reproducible - byte-for-byte identical PDFs across all supported platforms (Windows 10+11, Linux, macOS) |
+| **NFR-01** | Output **must** be 100% reproducible - byte-for-byte identical PDFs given the same inputs, regardless of execution environment |
 | **NFR-02** | Rendering engine **shall** detect nondeterministic content (e.g., timestamps) and normalize it |
 
 ### 3.2 Performance
@@ -85,6 +85,7 @@ SysDocs provides an automated, deterministic, and portable documentation pipelin
 |----|-------------|
 | **NFR-05** | The tool **shall not** require external network access once running (air-gap compatible) |
 | **NFR-06** | Git credentials **must** be handled securely |
+| **NFR-07** | All commits **must** be GPG-signed and all release artifacts **must** be digitally signed to ensure authenticity and integrity |
 
 ## 4. Constraints
 
@@ -93,7 +94,7 @@ SysDocs provides an automated, deterministic, and portable documentation pipelin
 | **C-01** | The tool **must** be licensed under MIT License and **shall** only use dependencies with MIT-compatible licenses to preserve license integrity |
 | **C-02** | **Must** avoid platform-specific behavior (fonts, rendering differences) |
 | **C-03** | **Must** use deterministic rendering libraries or embed them fully |
-| **C-04** | All official builds **must** use Nix to ensure cryptographic reproducibility. The build output hash **must** be identical across Linux distributions (verified via Fedora and Debian). See [DEV-003](DEVIATIONS.md#dev-003) for cross-platform deviation |
+| **C-04** | All official builds **must** be cryptographically reproducible - the build output hash **must** be identical when built from the same source on different systems. See [DEV-003](DEVIATIONS.md#dev-003) for implementation scope |
 
 ## 5. Build and Deployment Requirements
 
@@ -112,10 +113,10 @@ SysDocs provides an automated, deterministic, and portable documentation pipelin
 | Category | Count | IDs |
 |----------|-------|-----|
 | **Functional Requirements** | 15 | FR-01 to FR-15 |
-| **Non-Functional Requirements** | 6 | NFR-01 to NFR-06 |
+| **Non-Functional Requirements** | 7 | NFR-01 to NFR-07 |
 | **Constraints** | 4 | C-01 to C-04 |
 | **Build Requirements** | 5 | BR-01 to BR-05 |
-| **Total Requirements** | **30** | |
+| **Total Requirements** | **31** | |
 
 ---
 

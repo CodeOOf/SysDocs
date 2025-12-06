@@ -1,0 +1,5 @@
+# Expected results directories
+
+The actual PDF files are generated during testing and not committed to git by default.
+
+Use `make generate-expected-results` or the CI/CD pipeline to generate baseline PDFs.

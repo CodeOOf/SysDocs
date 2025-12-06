@@ -1,0 +1,254 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{booktabs}
+
+\title{Software Design Document (SDD)}
+\author{ADNS Project Team}
+\date{November 25, 2025}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+\subsection{Purpose}
+
+This Software Design Document describes the software architecture and detailed design for the Autonomous Drone Navigation System (ADNS).
+
+\subsection{Scope}
+
+The ADNS software consists of:
+\begin{itemize}
+    \item Perception Module (sensor processing)
+    \item Navigation Module (path planning, state estimation)
+    \item Mission Control Module (autonomous mission execution)
+    \item Communication Module (telemetry, commands)
+\end{itemize}
+
+\subsection{Definitions and Acronyms}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Term} & \textbf{Definition} \\
+\midrule
+ROS2 & Robot Operating System 2 - middleware framework \\
+DDS & Data Distribution Service - ROS2 transport layer \\
+EKF & Extended Kalman Filter - state estimation algorithm \\
+SLAM & Simultaneous Localization and Mapping \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{System Architecture}
+
+\subsection{Architecture Overview}
+
+The ADNS software follows a layered architecture:
+
+\begin{enumerate}
+    \item \textbf{Hardware Abstraction Layer}: Sensor drivers, actuator interfaces
+    \item \textbf{Middleware Layer}: ROS2 communication, message passing
+    \item \textbf{Application Layer}: Perception, navigation, mission control
+    \item \textbf{User Interface Layer}: Ground station GUI, CLI tools
+\end{enumerate}
+
+\subsection{Module Decomposition}
+
+\subsubsection{Perception Module}
+
+\textbf{Responsibilities}:
+\begin{itemize}
+    \item Process LiDAR point clouds (100,000 points at 10 Hz)
+    \item Process camera images (1920x1080 at 30 FPS)
+    \item Fuse sensor data into unified world model
+    \item Detect and classify obstacles
+\end{itemize}
+
+\textbf{Interfaces}:
+\begin{itemize}
+    \item Input: /lidar/points (sensor\_msgs/PointCloud2)
+    \item Input: /camera/image (sensor\_msgs/Image)
+    \item Output: /perception/obstacles (custom\_msgs/ObstacleArray)
+\end{itemize}
+
+\subsubsection{Navigation Module}
+
+\textbf{Responsibilities}:
+\begin{itemize}
+    \item Estimate 6-DOF pose (position + orientation)
+    \item Plan collision-free trajectories
+    \item Execute waypoint navigation
+    \item Handle dynamic obstacle avoidance
+\end{itemize}
+
+\textbf{Components}:
+\begin{itemize}
+    \item State Estimator (EKF)
+    \item Path Planner (A*)
+    \item Trajectory Generator
+    \item Controller Interface
+\end{itemize}
+
+\section{Detailed Design}
+
+\subsection{State Estimation (Extended Kalman Filter)}
+
+The EKF estimates the drone state vector:
+
+\[
+\mathbf{x} = [p_x, p_y, p_z, v_x, v_y, v_z, q_w, q_x, q_y, q_z]^T
+\]
+
+Where:
+\begin{itemize}
+    \item $p_{x,y,z}$ = position (meters)
+    \item $v_{x,y,z}$ = velocity (m/s)
+    \item $q_{w,x,y,z}$ = orientation quaternion
+\end{itemize}
+
+\textbf{Prediction Step}:
+
+\[
+\hat{\mathbf{x}}_{k|k-1} = f(\mathbf{x}_{k-1}, \mathbf{u}_k)
+\]
+
+\[
+\mathbf{P}_{k|k-1} = \mathbf{F}_k \mathbf{P}_{k-1} \mathbf{F}_k^T + \mathbf{Q}_k
+\]
+
+\textbf{Update Step}:
+
+\[
+\mathbf{K}_k = \mathbf{P}_{k|k-1} \mathbf{H}_k^T (\mathbf{H}_k \mathbf{P}_{k|k-1} \mathbf{H}_k^T + \mathbf{R}_k)^{-1}
+\]
+
+\[
+\hat{\mathbf{x}}_k = \hat{\mathbf{x}}_{k|k-1} + \mathbf{K}_k (\mathbf{z}_k - h(\hat{\mathbf{x}}_{k|k-1}))
+\]
+
+\subsection{Path Planning (A* Algorithm)}
+
+The A* algorithm finds the optimal path from start to goal:
+
+\begin{enumerate}
+    \item Initialize open set with start node
+    \item While open set not empty:
+    \begin{enumerate}
+        \item Select node with lowest $f(n) = g(n) + h(n)$
+        \item If goal reached, reconstruct path
+        \item Expand neighbors, update costs
+    \end{enumerate}
+\end{enumerate}
+
+\textbf{Heuristic Function}:
+
+\[
+h(n) = \sqrt{(x_n - x_{goal})^2 + (y_n - y_{goal})^2 + (z_n - z_{goal})^2}
+\]
+
+\section{Data Structures}
+
+\subsection{Obstacle Representation}
+
+\begin{verbatim}
+struct Obstacle {
+    uint32_t id;
+    geometry_msgs::Point position;
+    geometry_msgs::Vector3 velocity;
+    geometry_msgs::Vector3 dimensions;
+    enum Type { STATIC, DYNAMIC } type;
+    float confidence;
+};
+\end{verbatim}
+
+\subsection{Waypoint}
+
+\begin{verbatim}
+struct Waypoint {
+    geometry_msgs::Point position;
+    float tolerance;  // meters
+    float speed;      // m/s
+    bool hover;       // hover at waypoint?
+    float hover_time; // seconds
+};
+\end{verbatim}
+
+\section{Performance Requirements}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Module} & \textbf{Requirement} & \textbf{Target} \\
+\midrule
+Perception & Point cloud processing & < 50 ms \\
+Perception & Image processing & < 30 ms \\
+Navigation & State estimation rate & 100 Hz \\
+Navigation & Path planning & < 200 ms \\
+Mission Control & Command response & < 100 ms \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Error Handling}
+
+\subsection{Sensor Failures}
+
+\begin{itemize}
+    \item \textbf{LiDAR failure}: Switch to camera-only mode, reduce speed
+    \item \textbf{Camera failure}: Rely on LiDAR, disable visual odometry
+    \item \textbf{IMU failure}: Trigger emergency landing
+\end{itemize}
+
+\subsection{Communication Failures}
+
+\begin{itemize}
+    \item \textbf{Comms loss $>$ 10 seconds}: Execute return-to-home
+    \item \textbf{Comms latency $>$ 500 ms}: Alert operator, continue mission
+\end{itemize}
+
+\section{Safety-Critical Functions}
+
+The following functions are classified as DO-178C Level C:
+
+\begin{itemize}
+    \item Obstacle detection and avoidance
+    \item Geofence enforcement
+    \item Emergency landing controller
+    \item Watchdog monitoring
+\end{itemize}
+
+\textbf{Verification}: MC/DC (Modified Condition/Decision Coverage) required for all safety-critical code.
+
+\section{Testing Strategy}
+
+\subsection{Unit Tests}
+
+\begin{itemize}
+    \item Google Test framework
+    \item Target: 95\% statement coverage
+    \item Target: 85\% MC/DC coverage (safety-critical code)
+\end{itemize}
+
+\subsection{Integration Tests}
+
+\begin{itemize}
+    \item ROS2 integration testing (launch tests)
+    \item Hardware-in-the-Loop (HIL) testing
+\end{itemize}
+
+\section{Document Control}
+
+\textbf{File}: 21\_SDD\_ADNS\_Software.tex \\
+\textbf{Version}: 1.0.0 \\
+\textbf{Date}: November 25, 2025 \\
+\textbf{Status}: Approved \\
+\textbf{Classification}: Company Confidential
+
+\end{document}

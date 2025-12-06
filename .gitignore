@@ -94,6 +94,22 @@ appsettings.Development.json
 appsettings.Local.json
 secrets.json
 
+# Code signing certificates and keys (NFR-07)
+# NEVER commit production certificates to source control
+*.pfx
+*.p12
+*.snk
+*.key
+keys/
+certs/
+certificates/
+*.cer
+*.crt
+*.pem
+# Allow example/template files if needed
+!**/example.snk
+!**/template.pfx
+
 # Local development
 local/
 scratch/

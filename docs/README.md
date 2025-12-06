@@ -37,21 +37,28 @@ The complete V&V documentation thread:
 11. **[DETERMINISM_EXPLAINED.md](DETERMINISM_EXPLAINED.md)** - Build vs output determinism explained
 12. **[DETERMINISTIC_BUILDS.md](DETERMINISTIC_BUILDS.md)** - Nix setup and usage guide
 13. **[DETERMINISTIC_BUILD_SUMMARY.md](DETERMINISTIC_BUILD_SUMMARY.md)** - Build system implementation summary
-14. **[WINDOWS_BUILD.md](WINDOWS_BUILD.md)** - Windows/WSL2 setup instructions
+14. **[PLATFORM_ARCHITECTURE.md](PLATFORM_ARCHITECTURE.md)** - Platform strategy: Docker-only deployment, cross-platform development
+15. **[WINDOWS_BUILD.md](WINDOWS_BUILD.md)** - Windows/WSL2 setup instructions
 
 #### License & Compliance
-15. **[LICENSE_COMPLIANCE_SUMMARY.md](LICENSE_COMPLIANCE_SUMMARY.md)** - Compliance procedures and policy
+16. **[LICENSE_COMPLIANCE_SUMMARY.md](LICENSE_COMPLIANCE_SUMMARY.md)** - Compliance procedures and policy
+
+#### Security
+17. **[CODE_SIGNING_GUIDE.md](CODE_SIGNING_GUIDE.md)** - Code signing setup and implementation guide
+18. **[DEVELOPER_SETUP_SIGNING.md](DEVELOPER_SETUP_SIGNING.md)** - Quick start guide for GPG and Cosign setup (Windows/Linux)
+19. **[GITHUB_SECRETS_SETUP.md](GITHUB_SECRETS_SETUP.md)** - Configure GitHub Secrets for release pipeline
+20. **[GITHUB_RELEASE_PROCESS.md](GITHUB_RELEASE_PROCESS.md)** - Complete GitHub release workflow and procedures
 
 #### Maintenance & Guidelines
-16. **[MAINTENANCE_GUIDELINES.md](MAINTENANCE_GUIDELINES.md)** - How to maintain documentation
-17. **[DOCUMENTATION_NAVIGATION.md](DOCUMENTATION_NAVIGATION.md)** 🗺️ Navigation guide (you are here!)
-18. **[DOCUMENTATION_GUIDE.md](DOCUMENTATION_GUIDE.md)** - Documentation writing guide
+21. **[MAINTENANCE_GUIDELINES.md](MAINTENANCE_GUIDELINES.md)** - How to maintain documentation
+19. **[DOCUMENTATION_NAVIGATION.md](DOCUMENTATION_NAVIGATION.md)** 🗺️ Navigation guide (you are here!)
+20. **[DOCUMENTATION_GUIDE.md](DOCUMENTATION_GUIDE.md)** - Documentation writing guide
 
 #### Systems Engineering Standards
-19. **[SE_ARTIFACT_DEFINITIONS.md](SE_ARTIFACT_DEFINITIONS.md)** - V-Model phases, INCOSE mappings, artifact definitions
+21. **[SE_ARTIFACT_DEFINITIONS.md](SE_ARTIFACT_DEFINITIONS.md)** - V-Model phases, INCOSE mappings, artifact definitions
 
 #### V&V Setup Reference
-20. **[VV_SETUP_SUMMARY.md](VV_SETUP_SUMMARY.md)** - V&V setup history and implementation details
+22. **[VV_SETUP_SUMMARY.md](VV_SETUP_SUMMARY.md)** - V&V setup history and implementation details
 
 ---
 
@@ -77,10 +84,20 @@ The complete V&V documentation thread:
 - Check licenses? → [../reports/LICENSE_COMPLIANCE.md](../reports/LICENSE_COMPLIANCE.md)
 - Understand policy? → [LICENSE_COMPLIANCE_SUMMARY.md](LICENSE_COMPLIANCE_SUMMARY.md)
 
+### Security & Code Signing
+- Set up code signing? → [CODE_SIGNING_GUIDE.md](CODE_SIGNING_GUIDE.md)
+- Verify signatures? → [CODE_SIGNING_GUIDE.md](CODE_SIGNING_GUIDE.md#verification)
+- Understand NFR-07? → [CODE_SIGNING_GUIDE.md](CODE_SIGNING_GUIDE.md)
+
 ### Systems Engineering
 - Understand V-Model phases? → [SE_ARTIFACT_DEFINITIONS.md](SE_ARTIFACT_DEFINITIONS.md)
 - Need INCOSE process mappings? → [SE_ARTIFACT_DEFINITIONS.md](SE_ARTIFACT_DEFINITIONS.md)
 - Looking for artifact templates? → [SE_ARTIFACT_DEFINITIONS.md](SE_ARTIFACT_DEFINITIONS.md)
+
+### Release Management
+- Creating a release? → [GITHUB_RELEASE_PROCESS.md](GITHUB_RELEASE_PROCESS.md)
+- Setting up code signing? → [CODE_SIGNING_GUIDE.md](CODE_SIGNING_GUIDE.md)
+- Configuring GitHub Secrets? → [GITHUB_RELEASE_PROCESS.md](GITHUB_RELEASE_PROCESS.md#21-required-github-secrets)
 
 ---
 

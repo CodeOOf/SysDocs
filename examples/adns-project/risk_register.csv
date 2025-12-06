@@ -1,0 +1,11 @@
+Risk ID,Risk Description,Category,Probability,Impact,RPN,Mitigation,Owner,Status
+R-001,LiDAR accuracy degraded in rain,Technical,Medium,High,245,Sensor fusion with vision; test in weather chamber,Hardware Team,Open
+R-002,Computer vision fails in low light,Technical,High,Critical,336,IR camera addition; night testing program,Vision Team,Mitigation In Progress
+R-003,Processing latency exceeds 100ms,Technical,Medium,High,180,Hardware acceleration; algorithm optimization,Software Team,Open
+R-004,Battery supplier delivery delay,Supply Chain,Medium,Medium,120,Identify alternate suppliers; increase buffer stock,Procurement,Closed
+R-005,FAA certification delay,Regulatory,Low,Critical,140,Early DER engagement; comprehensive documentation,Regulatory Affairs,Mitigation In Progress
+R-006,Key personnel departure,Organizational,Low,High,70,Cross-training; documentation; retention bonuses,HR / Management,Open
+R-007,Weather delays outdoor testing,Environmental,High,Medium,150,Schedule buffer; indoor test alternatives,Test Team,Accepted
+R-008,Cost overrun on sensor procurement,Financial,Medium,Medium,90,Value engineering; negotiate volume discounts,Procurement,Mitigation In Progress
+R-009,Integration issues with autopilot,Technical,Medium,High,168,Early integration testing; vendor support contract,Integration Team,Closed
+R-010,Cybersecurity vulnerability discovered,Security,Low,Critical,105,Security audit; penetration testing; encryption,Security Team,Mitigation In Progress

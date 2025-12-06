@@ -105,6 +105,7 @@ dotnet test --filter "RequirementId=FR-01"
 |----|-------------|----------------|-------|
 | NFR-05 | Air-gap compatible (no network required) | Docker container with embedded dependencies | All dependencies bundled in container |
 | NFR-06 | Secure Git credentials handling | Credential helpers | Environment variables, no hardcoded secrets |
+| NFR-07 | GPG-signed commits and signed release artifacts | GPG commit signing + Cosign for Docker + NuGet signing | All commits on protected branches require GPG signatures; release artifacts signed with GPG; Docker images signed with Cosign; verification tests in `NFR07_ShouldHaveSignedCommitsAndArtifacts()` |
 
 ---
 

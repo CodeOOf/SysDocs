@@ -13,6 +13,17 @@
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     
+    <!-- Code signing settings (NFR-07) -->
+    <!-- Note: Strong-name signing is enabled, but key file must be provided separately -->
+    <!-- For local development, use delay signing or skip signing -->
+    <!-- For CI/CD, provide key via environment variable or secure storage -->
+    <SignAssembly>false</SignAssembly> <!-- Set to true when certificate is available -->
+    <DelaySign>false</DelaySign>
+    <!-- Uncomment and set path when certificate is available: -->
+    <!-- <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)..\keys\SysDocs.snk</AssemblyOriginatorKeyFile> -->
+    <!-- For non-Windows platforms, use public signing: -->
+    <PublicSign Condition="'$(OS)' != 'Windows_NT' and '$(SignAssembly)' == 'true'">true</PublicSign>
+    
     <!-- Common package metadata -->
     <Authors>CodeOOf</Authors>
     <Company>SysDocs</Company>

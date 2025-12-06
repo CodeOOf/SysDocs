@@ -1,0 +1,374 @@
+INTERFACE CONTROL DOCUMENT - SENSORS
+
+Project: ADNS
+Document: 23_ICD_ADNS_Sensors
+Version: 1.0.0
+Date: November 30, 2025
+
+====================================================================
+
+1. SCOPE
+
+This Interface Control Document defines interfaces between the ADNS 
+compute platform (Jetson Orin) and the sensor subsystem:
+- LiDAR (Velodyne VLP-16)
+- Camera (IMX477)
+- IMU (BMI088 via Pixhawk)
+
+====================================================================
+
+2. LIDAR INTERFACE
+
+2.1 Physical Interface
+Protocol: Ethernet (100Base-TX)
+Cable: CAT5e or better
+Connector: RJ45
+Maximum Length: 100 meters
+
+2.2 Electrical Specifications
+Voltage: 12V DC ±10%
+Current: 1.2A typical, 2A peak
+Power: 8W typical, 24W peak
+
+2.3 Data Interface
+
+IP Configuration:
+LiDAR IP:     192.168.1.201
+Netmask:      255.255.255.0
+Gateway:      192.168.1.1
+Jetson IP:    192.168.1.100
+
+UDP Packets:
+Destination Port: 2368 (data)
+Destination Port: 8308 (position - if GPS used)
+
+Data Rate:
+Packet Rate: ~1700 packets/second at 10 Hz
+Bandwidth:  ~3 Mbps
+
+2.4 Data Format
+
+Point Cloud Data Structure:
+struct VLP16Packet {
+    uint8_t header[42];
+    uint8_t data[1200];  // 12 data blocks
+    uint32_t timestamp;
+    uint8_t factory[2];
+};
+
+Each data block contains:
+- Flag: 0xFFEE
+- Azimuth: 16-bit angle (0-35999, 0.01° resolution)
+- 32 channel measurements (16 lasers × 2 returns)
+
+Each measurement:
+- Distance: 16-bit (2mm resolution, 0-65535)
+- Reflectivity: 8-bit (0-255)
+
+2.5 Timing
+
+Scan Rate: 10 Hz (configurable 5-20 Hz)
+Update Period: 100 ms
+Latency: < 10 ms (sensor to network)
+
+2.6 ROS2 Topic
+
+Topic Name: /lidar/points
+Message Type: sensor_msgs/msg/PointCloud2
+Frame ID: lidar_link
+QoS: RELIABLE, TRANSIENT_LOCAL
+Update Rate: 10 Hz
+
+====================================================================
+
+3. CAMERA INTERFACE
+
+3.1 Physical Interface
+
+Protocol: MIPI CSI-2 (4-lane)
+Cable: Raspberry Pi Camera Cable (22-pin FFC)
+Maximum Length: 300 mm
+
+3.2 Electrical Specifications
+
+Voltage: 3.3V DC (supplied by Jetson)
+Current: 200 mA typical
+Power: 0.7W
+
+3.3 Data Interface
+
+MIPI CSI-2 Specifications:
+Lanes: 4
+Data Rate: 1.5 Gbps/lane (6 Gbps total)
+Clock: 750 MHz (DDR)
+
+Image Format:
+Resolution: 1920 x 1080 pixels (HD)
+Pixel Format: RGB888 or YUV422
+Bit Depth: 8 bits per channel
+Frame Rate: 30 FPS
+
+Bandwidth Calculation:
+1920 × 1080 × 3 bytes × 30 FPS = 186 MB/s = 1.49 Gbps
+
+3.4 Control Interface
+
+I2C Bus:
+Address: 0x1A (7-bit)
+Clock: 400 kHz (Fast Mode)
+Commands: Exposure, gain, white balance, resolution
+
+Exposure Control:
+Range: 1 µs to 11 seconds
+Default: Auto-exposure enabled
+Manual: Via I2C register 0x3500-0x3502
+
+Gain Control:
+Range: 1x to 16x
+Default: Auto-gain enabled
+Manual: Via I2C register 0x350A-0x350B
+
+3.5 Timing
+
+Frame Period: 33.33 ms (30 FPS)
+Exposure Time: Varies (auto-exposure)
+Processing Latency: < 5 ms (sensor readout)
+
+3.6 ROS2 Topic
+
+Topic Name: /camera/image_raw
+Message Type: sensor_msgs/msg/Image
+Encoding: rgb8
+Frame ID: camera_link
+QoS: RELIABLE, VOLATILE
+Update Rate: 30 Hz
+
+====================================================================
+
+4. IMU INTERFACE
+
+4.1 Physical Interface
+
+Connection Path: Jetson ←→ Pixhawk ←→ IMU (BMI088)
+
+Jetson to Pixhawk:
+Protocol: UART (serial)
+Baud Rate: 921600
+Cable: USB-to-UART adapter
+Connector: USB-C (Jetson), Micro-USB (Pixhawk)
+
+Pixhawk to IMU:
+Protocol: SPI
+Internal Connection: On Pixhawk PCB
+
+4.2 Electrical Specifications
+
+Pixhawk USB:
+Voltage: 5V DC (USB standard)
+Current: 500 mA max
+
+IMU Power:
+Voltage: 3.3V (supplied by Pixhawk)
+Current: 2 mA
+Power: 5 mW
+
+4.3 Data Interface
+
+MAVLink Protocol:
+Version: MAVLink v2
+Message Set: Common + Pixhawk extensions
+Update Rate: 100 Hz (configurable)
+
+Key Messages:
+- ATTITUDE (ID 30): Roll, pitch, yaw
+- ATTITUDE_QUATERNION (ID 31): Orientation as quaternion
+- LOCAL_POSITION_NED (ID 32): Position in NED frame
+- HIGHRES_IMU (ID 105): Raw IMU data
+
+HIGHRES_IMU Message Fields:
+- timestamp (uint64): microseconds
+- xacc, yacc, zacc (float): m/s² (accelerometer)
+- xgyro, ygyro, zgyro (float): rad/s (gyroscope)
+- xmag, ymag, zmag (float): Gauss (magnetometer)
+- abs_pressure (float): millibar
+- diff_pressure (float): millibar
+- pressure_alt (float): meters
+- temperature (float): °C
+
+4.4 Timing
+
+IMU Sample Rate: 1000 Hz (internal)
+MAVLink Publish Rate: 100 Hz
+Latency: < 5 ms (sensor to MAVLink message)
+
+4.5 ROS2 Topics
+
+Topic Name: /imu/data
+Message Type: sensor_msgs/msg/Imu
+Frame ID: imu_link
+QoS: RELIABLE, VOLATILE
+Update Rate: 100 Hz
+
+Fields:
+- orientation: Quaternion (from EKF)
+- angular_velocity: rad/s (gyroscope)
+- linear_acceleration: m/s² (accelerometer)
+- covariances: 3×3 matrices
+
+====================================================================
+
+5. COORDINATE FRAMES
+
+5.1 Frame Definitions
+
+base_link (drone body frame):
+- X: Forward (nose)
+- Y: Right (starboard)
+- Z: Down
+- Origin: Geometric center of frame
+
+lidar_link:
+- Offset from base_link: [0.15, 0.0, -0.10] meters
+- Rotation: None (aligned with base_link)
+
+camera_link:
+- Offset from base_link: [0.20, 0.0, -0.05] meters
+- Rotation: None (aligned with base_link)
+- Note: Gimbal compensation applied in software
+
+imu_link:
+- Offset from base_link: [0.0, 0.0, 0.0] meters
+- Rotation: None (assumed at center)
+
+5.2 Transform Tree (TF2)
+
+map
+ └─ odom
+     └─ base_link
+         ├─ lidar_link
+         ├─ camera_link
+         └─ imu_link
+
+Transforms Published By:
+- map → odom: Navigation module (SLAM/localization)
+- odom → base_link: State estimator (EKF)
+- base_link → sensors: Static transforms (URDF)
+
+====================================================================
+
+6. FAULT HANDLING
+
+6.1 LiDAR Faults
+
+No Data (> 1 second):
+Action: Log error, switch to camera-only mode
+Recovery: Auto-reconnect on data resume
+
+Corrupt Data (CRC errors):
+Action: Discard packet, log warning
+Recovery: Continue with next valid packet
+
+6.2 Camera Faults
+
+No Frame (> 1 second):
+Action: Log error, disable vision algorithms
+Recovery: Restart camera driver
+
+Exposure Issues (over/under):
+Action: Adjust exposure settings
+Recovery: Enable auto-exposure
+
+6.3 IMU Faults
+
+No Data (> 100 ms):
+Action: Log critical error, initiate emergency landing
+Recovery: Attempt MAVLink reconnect
+
+IMU Divergence (detected by Pixhawk):
+Action: Pixhawk switches to backup IMU
+Recovery: Log event, continue operation
+
+====================================================================
+
+7. CALIBRATION
+
+7.1 LiDAR Calibration
+
+Intrinsic: Factory-calibrated (no field calibration)
+Extrinsic: Measure physical offset from base_link
+Verification: Point cloud alignment test
+
+7.2 Camera Calibration
+
+Intrinsic Calibration:
+Method: Zhang's method (checkerboard pattern)
+Tool: ROS camera_calibration package
+Output: camera_info.yaml
+
+Parameters:
+- Focal length: fx, fy (pixels)
+- Principal point: cx, cy (pixels)
+- Distortion: k1, k2, p1, p2, k3
+
+Extrinsic Calibration:
+Method: Hand-eye calibration (if gimbal used)
+Frequency: Every 6 months or after collision
+
+7.3 IMU Calibration
+
+Gyroscope Bias:
+Method: Stationary calibration (30 seconds)
+Frequency: Every flight (auto-calibration on boot)
+
+Accelerometer Calibration:
+Method: Six-position calibration
+Frequency: Monthly or after hard landing
+
+====================================================================
+
+8. TEST POINTS
+
+8.1 LiDAR Test
+
+Verification:
+1. Power on, wait 10 seconds (spin-up)
+2. Check Ethernet link (LEDs on both ends)
+3. Ping 192.168.1.201
+4. Verify UDP packets on port 2368
+5. Check point cloud in RViz
+
+Expected Result: 
+~300,000 points/second, 360° coverage
+
+8.2 Camera Test
+
+Verification:
+1. Power on Jetson
+2. List video devices: v4l2-ctl --list-devices
+3. Capture image: v4l2-ctl --stream-mmap --stream-count=1
+4. Check ROS2 topic: ros2 topic echo /camera/image_raw
+
+Expected Result:
+1920x1080 @ 30 FPS, correct colors
+
+8.3 IMU Test
+
+Verification:
+1. Connect Pixhawk via USB
+2. Open QGroundControl
+3. Check IMU widget (attitude display)
+4. Rotate drone, verify orientation updates
+5. Check ROS2 topic: ros2 topic hz /imu/data
+
+Expected Result:
+100 Hz update rate, smooth orientation
+
+====================================================================
+
+DOCUMENT CONTROL
+
+File: 23_ICD_ADNS_Sensors.txt
+Version: 1.0.0
+Date: November 30, 2025
+Status: Approved
+Classification: Company Confidential

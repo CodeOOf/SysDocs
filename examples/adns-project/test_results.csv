@@ -1,0 +1,16 @@
+Test ID,Test Name,Requirement,Test Type,Status,Execution Date,Result,Notes
+ST-001,Obstacle Detection Range,SYS-FR-001,System Test,Passed,2025-11-01,100% detection within 50m,Velodyne VLP-16 exceeds spec
+ST-002,Obstacle Classification,SYS-FR-002,System Test,Passed,2025-11-02,96.2% accuracy,Exceeds 95% requirement
+ST-010,Trajectory Computation Time,SYS-FR-010,System Test,Passed,2025-11-05,Mean 142ms; Max 187ms,Meets 200ms requirement
+ST-030,Autonomous Takeoff,SYS-FR-030,System Test,Passed,2025-11-15,Altitude 5.1m ± 0.15m,Within tolerance
+ST-031,Autonomous Landing,SYS-FR-031,System Test,Passed,2025-11-15,Landing accuracy ±0.42m,Meets spec
+ST-100,Detection Accuracy,SYS-PR-010,System Test,Passed,2025-11-20,99.6% accuracy,Exceeds 99.5% requirement
+ST-200,Geofence Enforcement,SYS-SR-001,System Test,Passed,2025-11-22,100% containment in 50 tests,Zero breaches
+PT-001,Camera Frame Rate,SYS-FR-003,Performance Test,Passed,2025-10-28,Average 31.2 FPS; Min 29.8 FPS,Meets 30 FPS requirement
+PT-020,State Estimation Rate,SYS-FR-020,Performance Test,Passed,2025-10-30,100.3 Hz average,Meets spec
+PT-100,End-to-End Latency,SYS-PR-001,Performance Test,Failed,2025-12-01,Mean 62ms; 95th %ile 112ms,95th percentile exceeds 100ms - optimization needed
+PT-102,Position RMSE,SYS-PR-012,Performance Test,Passed,2025-11-18,RMSE 0.27m,Meets < 0.3m requirement
+FT-001,Emergency Landing,SYS-SR-002,Failure Test,Passed,2025-11-25,Safe landing in all 10 failure scenarios,Watchdog recovery verified
+FT-002,Single Sensor Failure,SYS-SR-003,Failure Test,Passed,2025-11-26,Detection continues at 92% accuracy,Meets > 90% requirement
+ET-002,Lighting Conditions,SYS-FR-005,Environmental Test,Passed,2025-11-10,Operates 10 lux to 100k lux,Full range verified
+ET-010,Wind Tolerance,SYS-PR-022,Environmental Test,In Progress,2025-12-10 (planned),Pending weather window,Outdoor test blocked by rain

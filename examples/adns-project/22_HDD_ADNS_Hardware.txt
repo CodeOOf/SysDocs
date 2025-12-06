@@ -1,0 +1,387 @@
+Hardware Design Document (HDD)
+
+Project: Autonomous Drone Navigation System (ADNS)
+Document: 22_HDD_ADNS_Hardware
+Version: 1.0.0
+Date: November 28, 2025
+Status: Approved
+
+================================================================================
+
+1. INTRODUCTION
+
+1.1 Purpose
+
+This Hardware Design Document describes the physical components, electrical architecture, and mechanical design of the ADNS hardware platform.
+
+1.2 Scope
+
+The ADNS hardware consists of:
+- Compute platform (NVIDIA Jetson AGX Orin)
+- Sensor suite (LiDAR, camera, IMU)
+- Flight controller (Pixhawk 4)
+- Power distribution system
+- Communication radios
+- Mechanical frame and mounting
+
+================================================================================
+
+2. SYSTEM ARCHITECTURE
+
+2.1 Block Diagram
+
+┌─────────────────────────────────────────────────────────────────┐
+│                         ADNS HARDWARE                           │
+│                                                                 │
+│  ┌─────────────┐    ┌──────────────┐    ┌─────────────┐       │
+│  │   LiDAR     │───▶│   Compute    │◀──▶│   Flight    │       │
+│  │ VLP-16      │    │   Platform   │    │  Controller │       │
+│  └─────────────┘    │  Jetson Orin │    │  Pixhawk 4  │       │
+│                     │              │    └─────────────┘       │
+│  ┌─────────────┐    │   64GB RAM   │           │             │
+│  │   Camera    │───▶│   256GB SSD  │           │             │
+│  │ IMX477 12MP │    │              │           ▼             │
+│  └─────────────┘    └──────────────┘    ┌─────────────┐       │
+│                             │            │   Motors    │       │
+│  ┌─────────────┐           │            │   & ESCs    │       │
+│  │     IMU     │───────────┘            └─────────────┘       │
+│  │   BMI088    │                                               │
+│  └─────────────┘           ┌──────────────┐                   │
+│                            │   Battery    │                   │
+│  ┌─────────────┐           │   6S LiPo    │                   │
+│  │   Radio     │           │   22.2V      │                   │
+│  │  900 MHz    │           │   10,000 mAh │                   │
+│  └─────────────┘           └──────────────┘                   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+
+================================================================================
+
+3. COMPONENT SPECIFICATIONS
+
+3.1 Compute Platform
+
+Component:      NVIDIA Jetson AGX Orin 64GB
+CPU:            12-core ARM Cortex-A78AE @ 2.2 GHz
+GPU:            2048-core NVIDIA Ampere GPU with 64 Tensor Cores
+RAM:            64 GB LPDDR5
+Storage:        256 GB NVMe SSD
+Power:          15W - 60W (configurable)
+Operating Temp: -25°C to +80°C
+Dimensions:     100mm x 87mm x 35mm
+Weight:         280g
+
+Interfaces:
+- 2x MIPI CSI-2 (camera)
+- 1x Gigabit Ethernet (LiDAR)
+- 4x USB 3.2 Gen 2
+- 1x PCIe Gen4 x8
+- UART, SPI, I2C, GPIO
+
+3.2 LiDAR Sensor
+
+Component:      Velodyne VLP-16 (Puck)
+Technology:     Time-of-Flight laser ranging
+Range:          100 meters
+Accuracy:       ±3 cm
+Field of View:  360° horizontal, 30° vertical (-15° to +15°)
+Scan Rate:      5-20 Hz (configurable, using 10 Hz)
+Points/Second:  ~300,000
+Laser:          16 channels, 903 nm wavelength
+Interface:      100Base-TX Ethernet
+Power:          8W typical
+Weight:         830g
+
+3.3 Camera
+
+Component:      Raspberry Pi HQ Camera (IMX477 sensor)
+Sensor:         Sony IMX477R (12.3 MP)
+Resolution:     4056 x 3040 pixels (using 1920x1080 for real-time)
+Frame Rate:     30 FPS at 1920x1080
+Pixel Size:     1.55 μm x 1.55 μm
+Lens Mount:     C/CS-mount (using 6mm lens)
+Interface:      MIPI CSI-2 (4-lane)
+Power:          0.7W
+Weight:         30g (camera) + 50g (lens)
+
+3.4 Inertial Measurement Unit (IMU)
+
+Component:      Bosch BMI088 (integrated in Pixhawk 4)
+Gyroscope:      ±2000 °/s range, 16-bit resolution
+Accelerometer:  ±24g range, 16-bit resolution
+Gyro Noise:     0.014 °/s/√Hz
+Accel Noise:    180 μg/√Hz
+Sample Rate:    Up to 2 kHz (using 1 kHz)
+Interface:      SPI
+Power:          5 mW
+
+3.5 Flight Controller
+
+Component:      Holybro Pixhawk 4
+Processor:      STM32F765 (32-bit ARM Cortex-M7, 216 MHz)
+RAM:            512 KB
+Flash:          2 MB
+Sensors:        Triple redundant IMU, barometer, magnetometer
+Interfaces:     8x PWM outputs, UART, I2C, CAN, USB
+Firmware:       PX4 v1.14
+Weight:         15g
+
+3.6 Power System
+
+Battery:        6S LiPo (6 cells, 22.2V nominal)
+Capacity:       10,000 mAh
+Max Discharge:  50C (500A burst)
+Weight:         1,200g
+Chemistry:      Lithium Polymer
+
+Power Budget:
+- Motors (4x):         Peak 800W (200W each), cruise 400W
+- Compute (Jetson):    30W average, 60W peak
+- LiDAR:               8W
+- Camera:              1W
+- Pixhawk:             2W
+- Radio:               5W
+- Total Average:       ~450W
+- Total Peak:          ~880W
+
+Flight Time Estimate:
+- Energy available: 22.2V × 10Ah = 222 Wh
+- Average consumption: 450W
+- Theoretical time: 222 Wh / 450W = 29.6 minutes
+- Practical (80% usable): ~24 minutes
+
+3.7 Communication
+
+Radio:          RFD900x Long Range Telemetry Modem
+Frequency:      902-928 MHz (ISM band)
+Transmit Power: 1W (30 dBm)
+Range:          Up to 40 km (line of sight)
+Data Rate:      250 kbps
+Interface:      UART (MAVLink protocol)
+Weight:         20g
+
+Backup Radio:   2.4 GHz WiFi (802.11ac)
+Purpose:        High-bandwidth (video, map downloads)
+Range:          ~300m
+
+================================================================================
+
+4. ELECTRICAL DESIGN
+
+4.1 Power Distribution
+
+Battery (22.2V)
+     │
+     ├─▶ Power Module (current/voltage sensing)
+     │
+     ├─▶ ESCs (4x) ──▶ Motors (4x)
+     │
+     ├─▶ 12V Regulator ──▶ Jetson Orin (12V input)
+     │
+     ├─▶ 12V Regulator ──▶ LiDAR (12V input)
+     │
+     └─▶ 5V Regulator ──▶ Pixhawk, Camera, Radio
+
+4.2 Wiring Harness
+
+- Battery to Power Module: 10 AWG silicone wire
+- Power Module to ESCs: 12 AWG silicone wire
+- Signal wires: 22 AWG shielded
+- Total harness weight: ~300g
+
+4.3 Connectors
+
+- Battery: XT90 connector
+- ESCs: 3.5mm bullet connectors
+- Sensors: JST-GH (Pixhawk ecosystem standard)
+
+================================================================================
+
+5. MECHANICAL DESIGN
+
+5.1 Frame
+
+Material:       Carbon fiber + 7075 aluminum
+Configuration:  X-frame quadcopter
+Wheelbase:      550mm (motor to motor diagonal)
+Weight:         800g (frame + hardware)
+
+Arms:           Carbon fiber tubes (25mm diameter, 2mm wall)
+Center Plate:   5mm carbon fiber plate (top + bottom)
+Standoffs:      Aluminum (M3 threaded)
+
+5.2 Component Mounting
+
+- Jetson Orin: Vibration-isolated mount (rubber dampers)
+- LiDAR: Top-mounted (360° clear view)
+- Camera: Forward-facing (±15° gimbal for pitch/roll compensation)
+- Pixhawk: Center of frame (near CG), vibration-isolated
+- Battery: Bottom-mounted (adjustable position for CG tuning)
+
+5.3 Weight Distribution
+
+Component               Weight (g)
+─────────────────────────────────
+Frame + hardware             800
+Motors (4x @ 150g)           600
+ESCs (4x @ 25g)              100
+Propellers (4x @ 15g)         60
+Jetson Orin                  280
+LiDAR VLP-16                 830
+Camera + lens                 80
+Pixhawk 4                     15
+IMU (integrated)               0
+Radio (900 MHz)               20
+Battery 6S 10Ah            1,200
+Power distribution           300
+Wiring                       200
+Misc hardware                100
+─────────────────────────────────
+Total:                     4,585g (~4.6 kg)
+
+5.4 Center of Gravity
+
+Target CG: Geometric center of frame (motor-to-motor midpoint)
+CG Tolerance: ±10mm horizontal, ±5mm vertical
+Adjustment: Battery position slider (±30mm range)
+
+================================================================================
+
+6. THERMAL MANAGEMENT
+
+6.1 Cooling Requirements
+
+Jetson Orin:
+- Passive heatsink (aluminum, 100g)
+- Active cooling (40mm fan, 12V, 0.5W) for extended operation
+- Thermal interface: Thermal pad (6 W/m·K)
+
+LiDAR:
+- Self-cooling (internal fan)
+- Adequate ventilation (no enclosure blockage)
+
+6.2 Operating Temperature
+
+Ambient Range:   -10°C to +50°C
+Component Limits:
+- Jetson: -25°C to +80°C (junction temp < 95°C)
+- LiDAR: -10°C to +60°C
+- Battery: 0°C to +60°C (charge), -20°C to +60°C (discharge)
+
+Strategy:
+- Pre-heat battery in cold conditions (< 10°C)
+- Active cooling (fan) if Jetson junction temp > 85°C
+
+================================================================================
+
+7. ENVIRONMENTAL PROTECTION
+
+7.1 Ingress Protection
+
+Rating Target: IP54 (dust protected, splash water resistant)
+
+Protection Measures:
+- Jetson: Conformal coating on PCB
+- Camera: Lens hood, protective glass
+- Connectors: Sealing gaskets (JST-GH includes seals)
+- Vents: LiDAR only (self-sealed design)
+
+7.2 Vibration Isolation
+
+Critical Components:
+- Jetson Orin: 4x rubber dampers (60 Shore A hardness)
+- Pixhawk 4: Foam dampers (included)
+- Camera: Gimbal isolation
+
+Vibration Spec: MIL-STD-810G Method 514.7 Category 4 (rotary wing)
+Expected Vibration: 5-20 Hz (rotor frequency), 100-300 Hz (motor harmonics)
+
+================================================================================
+
+8. SAFETY FEATURES
+
+8.1 Electrical Safety
+
+- Battery Management System (BMS): Cell balancing, over-current protection
+- Fuses: 40A main fuse, 10A per regulator
+- Voltage monitoring: Pixhawk monitors battery voltage
+- Low voltage alarm: Triggered at 19.8V (3.3V/cell)
+
+8.2 Mechanical Safety
+
+- Propeller guards (optional, for indoor/training)
+- Emergency cutoff switch (accessible on frame)
+- Redundant motor mounting (lock nuts + thread lock)
+
+8.3 Fail-Safe Features
+
+- Watchdog timer: Jetson + Pixhawk
+- Redundant IMUs: Triple redundancy in Pixhawk
+- Emergency landing: Pixhawk can execute without Jetson
+
+================================================================================
+
+9. MANUFACTURING & ASSEMBLY
+
+9.1 Bill of Materials (BOM)
+
+See separate document: BOM_ADNS_v1.0.xlsx
+
+9.2 Assembly Instructions
+
+1. Frame assembly (carbon fiber arms + center plates)
+2. Motor mounting and ESC soldering
+3. Power distribution wiring
+4. Pixhawk installation (vibration isolation)
+5. Jetson Orin mounting and cooling installation
+6. LiDAR top-mounting
+7. Camera gimbal installation
+8. Radio antenna mounting
+9. Battery tray installation
+10. System integration testing
+
+Estimated Assembly Time: 8 hours (skilled technician)
+
+9.3 Testing & Validation
+
+Pre-Flight Checklist:
+□ All connections secure
+□ Propellers installed correctly (CCW/CW)
+□ Battery fully charged and balanced
+□ Jetson boots successfully
+□ LiDAR spins freely, data streaming
+□ Camera image quality verified
+□ Radio link established (ground station)
+□ Pixhawk pre-arm checks passed
+□ CG within tolerance
+
+================================================================================
+
+10. COMPLIANCE
+
+10.1 Regulatory
+
+- FCC Part 15 (radio emissions): RFD900x certified
+- FAA Part 107 (UAS): Weight < 25 kg ✓
+- Battery: UN38.3 certified (shipping/transport)
+
+10.2 Standards
+
+- MIL-STD-810G: Vibration, temperature, humidity
+- DO-160G: Environmental conditions (reference)
+
+================================================================================
+
+DOCUMENT CONTROL
+
+File:           22_HDD_ADNS_Hardware.txt
+Version:        1.0.0
+Date:           November 28, 2025
+Status:         Approved
+Classification: Company Confidential
+Next Review:    May 2026
+
+Approval:
+- Hardware Lead:       David Chen         (Nov 26, 2025)
+- Chief Engineer:      James Park         (Nov 27, 2025)
+- Program Manager:     Sarah Chen         (Nov 28, 2025)

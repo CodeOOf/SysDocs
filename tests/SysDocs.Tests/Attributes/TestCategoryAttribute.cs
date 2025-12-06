@@ -28,4 +28,5 @@ public static class TestCategories
     public const string Determinism = "Determinism";
     public const string CrossPlatform = "CrossPlatform";
     public const string Performance = "Performance";
+    public const string FileFormat = "FileFormat";
 }

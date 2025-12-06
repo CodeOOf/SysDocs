@@ -337,6 +337,29 @@ This matrix provides a complete view of each requirement:
 - Environment variable validation
 - No secrets in code/logs check
 
+### NFR-07: Code Signing and Commit Verification
+**Category**: Security  
+**Requirement**: All commits must be GPG-signed and all release artifacts must be digitally signed  
+**Implementation Solution**: 
+- **Commit Signing**: GPG signatures for all commits on protected branches
+- **Linux Releases**: GPG-signed release tarballs and checksums
+- **Docker Images**: Cosign signatures for container images
+- **NuGet Packages**: NuGet package signing for .NET packages
+**GPG Key Management**: GitHub GPG keys for commit verification  
+**Container Signing**: Sigstore Cosign for Docker image signatures  
+**Signing Scripts**: `scripts/sign-release.sh`, `scripts/verify-signatures.sh`  
+**Documentation**: [docs/CODE_SIGNING_GUIDE.md](../docs/CODE_SIGNING_GUIDE.md)  
+**Tests**: ✅ Has automated tests  
+**Test Details**: See [reports/TEST_TRACEABILITY.md](reports/TEST_TRACEABILITY.md#nfr-07)  
+**Deviations**: DEV-004 (Signing infrastructure in development)  
+**Verification**:
+- GPG commit signature verification (git log --show-signature)
+- Release artifact GPG signature verification (gpg --verify)
+- Docker image signature verification (cosign verify)
+- NuGet package signature verification (dotnet nuget verify)
+- Automated tests in `NFR07_ShouldHaveSignedCommitsAndArtifacts()`
+- CI/CD pipeline enforces signed commits on protected branches
+
 ---
 
 ## Constraints

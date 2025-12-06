@@ -1,0 +1,505 @@
+name: Release Pipeline - Linux Docker Only
+
+# Production deployment: Linux Docker image only
+# Development: Any platform (Windows requires WSL2 for Linux tooling)
+# No platform-specific artifacts - Docker handles cross-platform execution
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch: # Allow manual triggering
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  CONFIGURATION: 'Release'
+  SOLUTION: 'src/SysDocs.sln'
+
+jobs:
+  # Job 1: Build Linux artifacts for Docker image
+  build-linux:
+    name: Build Linux Artifacts
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.SOLUTION }}
+      
+      - name: Build solution
+        run: dotnet build ${{ env.SOLUTION }} --configuration ${{ env.CONFIGURATION }} --no-restore
+      
+      - name: Run tests
+        run: dotnet test ${{ env.SOLUTION }} --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal
+      
+      - name: Run FR-01 Multi-Format Import Tests
+        run: |
+          dotnet test tests/SysDocs.Tests/SysDocs.Tests.csproj \
+            --configuration ${{ env.CONFIGURATION }} \
+            --no-build \
+            --filter "Category=FileFormat" \
+            --verbosity normal
+      
+      - name: Run FR-06/NFR-01 Determinism Tests
+        run: |
+          dotnet test tests/SysDocs.Tests/SysDocs.Tests.csproj \
+            --configuration ${{ env.CONFIGURATION }} \
+            --no-build \
+            --filter "Category=Determinism" \
+            --verbosity normal
+      
+      - name: Publish Linux x64
+        run: |
+          dotnet publish src/SysDocs.Cli/SysDocs.Cli.csproj \
+            --configuration ${{ env.CONFIGURATION }} \
+            --runtime linux-x64 \
+            --self-contained true \
+            --output artifacts/linux-x64 \
+            /p:PublishSingleFile=true \
+            /p:DebugType=embedded
+      
+      - name: Create Linux archive
+        run: |
+          cd artifacts/linux-x64
+          tar -czf ../sysdocs-linux-x64.tar.gz *
+      
+      # GPG Signing (NFR-07)
+      - name: Import GPG key
+        if: ${{ secrets.GPG_PRIVATE_KEY != '' }}
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+      
+      - name: Sign Linux artifacts with GPG
+        if: ${{ secrets.GPG_PRIVATE_KEY != '' }}
+        run: |
+          echo "🔐 Signing Linux artifacts with GPG..."
+          gpg --armor --detach-sign artifacts/sysdocs-linux-x64.tar.gz
+          echo "✅ Created: sysdocs-linux-x64.tar.gz.asc"
+          
+          # Generate and sign checksums
+          cd artifacts
+          sha256sum sysdocs-linux-x64.tar.gz > SHA256SUMS
+          gpg --clearsign SHA256SUMS
+          echo "✅ Created: SHA256SUMS.asc"
+      
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-artifacts
+          path: |
+            artifacts/sysdocs-linux-x64.tar.gz
+            artifacts/sysdocs-linux-x64.tar.gz.asc
+            artifacts/SHA256SUMS.asc
+          retention-days: 7
+
+  # Job 2: Create NuGet packages (optional - for library consumers)
+  build-nuget:
+    name: Build NuGet Packages
+    runs-on: ubuntu-latest
+    if: ${{ secrets.NUGET_API_KEY != '' }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.SOLUTION }}
+      
+      - name: Build solution
+        run: dotnet build ${{ env.SOLUTION }} --configuration ${{ env.CONFIGURATION }} --no-restore
+      
+      - name: Pack NuGet packages
+        run: |
+          dotnet pack src/SysDocs.Core/SysDocs.Core.csproj --configuration ${{ env.CONFIGURATION }} --output artifacts/nuget --no-build
+          dotnet pack src/SysDocs.Templates/SysDocs.Templates.csproj --configuration ${{ env.CONFIGURATION }} --output artifacts/nuget --no-build
+      
+      - name: Upload NuGet artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: artifacts/nuget/*.nupkg
+          retention-days: 7
+
+  # Job 3: Build and push Docker image with Cosign signing (PRIMARY DEPLOYMENT)
+  build-docker:
+    name: Build & Sign Docker Image
+    runs-on: ubuntu-latest
+    needs: [build-linux]
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      # Install Cosign for Docker image signing (NFR-07)
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+        with:
+          cosign-release: 'v2.2.2'
+      
+      - name: Build and push Docker image
+        id: build-push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/sysdocs:latest
+            ${{ secrets.DOCKER_USERNAME }}/sysdocs:${{ steps.version.outputs.VERSION }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      
+      # Sign Docker image with Cosign (NFR-07)
+      - name: Sign Docker image with Cosign
+        if: ${{ secrets.COSIGN_PRIVATE_KEY != '' }}
+        env:
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        run: |
+          echo "🔐 Signing Docker images with Cosign..."
+          
+          # Write Cosign private key to file
+          echo "${{ secrets.COSIGN_PRIVATE_KEY }}" > cosign.key
+          
+          # Sign both tags
+          cosign sign --yes --key cosign.key \
+            ${{ secrets.DOCKER_USERNAME }}/sysdocs:latest
+          
+          cosign sign --yes --key cosign.key \
+            ${{ secrets.DOCKER_USERNAME }}/sysdocs:${{ steps.version.outputs.VERSION }}
+          
+          # Clean up key file
+          rm -f cosign.key
+          
+          echo "✅ Docker images signed successfully"
+          echo ""
+          echo "Users can verify with:"
+          echo "  cosign verify --key cosign.pub ${{ secrets.DOCKER_USERNAME }}/sysdocs:${{ steps.version.outputs.VERSION }}"
+      
+      - name: Image digest
+        run: |
+          echo "Image digest: ${{ steps.build-push.outputs.digest }}"
+
+  # Job 4: Verify Cross-Platform Docker Execution (FR-14, NFR-01)
+  verify-docker-cross-platform:
+    name: Verify Docker Behavior (FR-14, NFR-01)
+    runs-on: ${{ matrix.os }}
+    needs: [build-docker]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    steps:
+      - name: Checkout repository (for test inputs)
+        uses: actions/checkout@v4
+      
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Extract version from tag
+        id: version
+        shell: bash
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      
+      - name: Pull Docker image
+        run: |
+          docker pull ${{ secrets.DOCKER_USERNAME }}/sysdocs:${{ steps.version.outputs.VERSION }}
+      
+      - name: Create test input file
+        shell: bash
+        run: |
+          cat > test-input.md << 'EOF'
+          # Test Document
+          
+          This is a test document for FR-14 and NFR-01 verification.
+          
+          ## Requirements Verification
+          
+          - FR-14: Identical behavior across Windows, Linux, macOS
+          - FR-06: Deterministic output
+          - NFR-01: 100% reproducible (byte-for-byte identical)
+          EOF
+      
+      - name: Run Docker container and generate PDF
+        shell: bash
+        run: |
+          docker run -v "$(pwd):/workspace" \
+            ${{ secrets.DOCKER_USERNAME }}/sysdocs:${{ steps.version.outputs.VERSION }} \
+            --input /workspace/test-input.md \
+            --output /workspace/test-output-${{ matrix.os }}.pdf
+      
+      - name: Verify PDF was created
+        shell: bash
+        run: |
+          if [ ! -f "test-output-${{ matrix.os }}.pdf" ]; then
+            echo "❌ ERROR: PDF not generated on ${{ matrix.os }}"
+            exit 1
+          fi
+          echo "✅ PDF successfully generated on ${{ matrix.os }}"
+      
+      - name: Calculate PDF hash
+        id: hash
+        shell: bash
+        run: |
+          if command -v sha256sum &> /dev/null; then
+            HASH=$(sha256sum "test-output-${{ matrix.os }}.pdf" | awk '{print $1}')
+          else
+            HASH=$(shasum -a 256 "test-output-${{ matrix.os }}.pdf" | awk '{print $1}')
+          fi
+          echo "hash=$HASH" >> $GITHUB_OUTPUT
+          echo "PDF hash on ${{ matrix.os }}: $HASH"
+      
+      - name: Upload PDF hash as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-hash-${{ matrix.os }}
+          path: test-output-${{ matrix.os }}.pdf
+          retention-days: 1
+      
+      - name: Save hash for comparison
+        shell: bash
+        run: |
+          echo "${{ steps.hash.outputs.hash }}" > hash-${{ matrix.os }}.txt
+      
+      - name: Upload hash file
+        uses: actions/upload-artifact@v4
+        with:
+          name: hash-${{ matrix.os }}
+          path: hash-${{ matrix.os }}.txt
+          retention-days: 1
+
+  # Job 5: Compare Cross-Platform Hashes (FR-14, NFR-01 Verification)
+  verify-fr14-nfr01-compliance:
+    name: Verify FR-14 & NFR-01 Compliance
+    runs-on: ubuntu-latest
+    needs: [verify-docker-cross-platform]
+    
+    steps:
+      - name: Download all hash files
+        uses: actions/download-artifact@v4
+        with:
+          path: hashes
+      
+      - name: Compare hashes across platforms
+        run: |
+          echo "=== FR-14 & NFR-01 Cross-Platform Verification ==="
+          echo ""
+          echo "FR-14: Execute with identical behavior across Windows, Linux, macOS"
+          echo "NFR-01: Output must be 100% reproducible - byte-for-byte identical PDFs"
+          echo ""
+          echo "Method: Docker image produces identical PDFs on all host platforms"
+          echo "Test: Same input → Same Docker image → Same output hash on all platforms"
+          echo ""
+          
+          UBUNTU_HASH=$(cat hashes/hash-ubuntu-latest/hash-ubuntu-latest.txt)
+          WINDOWS_HASH=$(cat hashes/hash-windows-latest/hash-windows-latest.txt)
+          MACOS_HASH=$(cat hashes/hash-macos-latest/hash-macos-latest.txt)
+          
+          echo "Ubuntu (Linux):  $UBUNTU_HASH"
+          echo "Windows:         $WINDOWS_HASH"
+          echo "macOS:           $MACOS_HASH"
+          echo ""
+          
+          if [ "$UBUNTU_HASH" = "$WINDOWS_HASH" ] && [ "$UBUNTU_HASH" = "$MACOS_HASH" ]; then
+            echo "✅ SUCCESS: All hashes match!"
+            echo "✅ FR-14 VERIFIED: Docker executes identically across all platforms"
+            echo "✅ NFR-01 VERIFIED: Output is 100% reproducible (byte-for-byte identical)"
+            echo "✅ FR-06 VERIFIED: Output is deterministic"
+            echo "✅ FR-07 VERIFIED: Identical text, images, ordering, metadata, layout"
+            exit 0
+          else
+            echo "❌ FAILURE: Hashes do not match across platforms!"
+            echo "❌ FR-14 VIOLATION: Docker behavior differs between platforms"
+            echo "❌ NFR-01 VIOLATION: Output is not 100% reproducible"
+            exit 1
+          fi
+
+  # Job 6: Create GitHub Release
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [build-linux, build-docker, verify-fr14-nfr01-compliance]
+    if: always()
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Download Linux artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-artifacts
+          path: artifacts/linux
+      
+      - name: Download NuGet packages (if available)
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: nuget-packages
+          path: artifacts/nuget
+      
+      - name: Display artifact structure
+        run: ls -R artifacts
+      
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          cat << EOF > release_notes.md
+          # SysDocs ${{ steps.version.outputs.VERSION }}
+          
+          ## 🐳 Docker Image (Recommended)
+          
+          **Primary deployment method** - Works on all platforms:
+          
+          \`\`\`bash
+          docker pull ${{ secrets.DOCKER_USERNAME }}/sysdocs:${{ steps.version.outputs.VERSION }}
+          docker run ${{ secrets.DOCKER_USERNAME }}/sysdocs:${{ steps.version.outputs.VERSION }} --help
+          \`\`\`
+          
+          ## 📦 Linux Binary
+          
+          For direct Linux execution:
+          
+          \`\`\`bash
+          wget https://github.com/${{ github.repository }}/releases/download/v${{ steps.version.outputs.VERSION }}/sysdocs-linux-x64.tar.gz
+          tar -xzf sysdocs-linux-x64.tar.gz
+          ./sysdocs --help
+          \`\`\`
+          
+          ## 🔐 Code Signing & Verification
+          
+          ### Verify GPG Signatures
+          
+          \`\`\`bash
+          # Download public key
+          wget https://raw.githubusercontent.com/${{ github.repository }}/main/docs/gpg-public-key.asc
+          gpg --import gpg-public-key.asc
+          
+          # Verify tarball signature
+          gpg --verify sysdocs-linux-x64.tar.gz.asc sysdocs-linux-x64.tar.gz
+          
+          # Verify checksums
+          gpg --verify SHA256SUMS.asc
+          sha256sum -c SHA256SUMS
+          \`\`\`
+          
+          ### Verify Docker Image Signature
+          
+          \`\`\`bash
+          # Download Cosign public key
+          wget https://raw.githubusercontent.com/${{ github.repository }}/main/docs/cosign.pub
+          
+          # Verify image signature
+          cosign verify --key cosign.pub ${{ secrets.DOCKER_USERNAME }}/sysdocs:${{ steps.version.outputs.VERSION }}
+          \`\`\`
+          
+          ## 📚 NuGet Packages (For Library Consumers)
+          
+          Available on NuGet.org:
+          
+          \`\`\`bash
+          dotnet add package SysDocs.Core --version ${{ steps.version.outputs.VERSION }}
+          dotnet add package SysDocs.Templates --version ${{ steps.version.outputs.VERSION }}
+          \`\`\`
+          
+          ## 💻 Development
+          
+          - **Linux**: Native development supported
+          - **Windows**: Use WSL2 for Linux tooling (see [WINDOWS_BUILD.md](https://github.com/${{ github.repository }}/blob/main/docs/WINDOWS_BUILD.md))
+          - **macOS**: Native development supported
+          
+          ## 📝 Changelog
+          
+          See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for detailed changes.
+          
+          ## 🔗 Documentation
+          
+          - [Requirements](https://github.com/${{ github.repository }}/blob/main/project/REQUIREMENTS.md)
+          - [User Guide](https://github.com/${{ github.repository }}/blob/main/README.md)
+          - [Code Signing Guide](https://github.com/${{ github.repository }}/blob/main/docs/CODE_SIGNING_GUIDE.md)
+          - [Developer Setup](https://github.com/${{ github.repository }}/blob/main/docs/DEVELOPER_SETUP_SIGNING.md)
+          EOF
+          
+          cat release_notes.md
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: SysDocs ${{ steps.version.outputs.VERSION }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
+          files: |
+            artifacts/linux/sysdocs-linux-x64.tar.gz
+            artifacts/linux/sysdocs-linux-x64.tar.gz.asc
+            artifacts/linux/SHA256SUMS.asc
+            artifacts/nuget/*.nupkg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Job 7: Publish to NuGet.org (optional, only for stable releases)
+  publish-nuget:
+    name: Publish to NuGet.org
+    runs-on: ubuntu-latest
+    needs: [build-nuget, create-release]
+    if: ${{ !contains(github.ref, 'alpha') && !contains(github.ref, 'beta') && secrets.NUGET_API_KEY != '' }}
+    
+    steps:
+      - name: Download NuGet packages
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget-packages
+          path: artifacts/nuget
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      
+      - name: Publish to NuGet.org
+        run: |
+          for pkg in artifacts/nuget/*.nupkg; do
+            echo "Publishing $pkg to NuGet.org..."
+            dotnet nuget push "$pkg" \
+              --api-key "${{ secrets.NUGET_API_KEY }}" \
+              --source https://api.nuget.org/v3/index.json \
+              --skip-duplicate
+          done

@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <!-- System Architecture Diagram -->
+  <defs>
+    <style>
+      .box { fill: #e8f4f8; stroke: #2c3e50; stroke-width: 2; }
+      .title { fill: #2c3e50; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; text-anchor: middle; }
+      .text { fill: #34495e; font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+      .arrow { stroke: #3498db; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .sensor { fill: #f39c12; stroke: #d68910; stroke-width: 2; }
+      .nav { fill: #3498db; stroke: #2980b9; stroke-width: 2; }
+      .control { fill: #27ae60; stroke: #229954; stroke-width: 2; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#3498db" />
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="400" y="30" class="title" font-size="18">ADNS System Architecture</text>
+  
+  <!-- Sensor Subsystem -->
+  <rect class="sensor" x="50" y="80" width="150" height="80" rx="5"/>
+  <text x="125" y="105" class="title">Sensor Subsystem</text>
+  <text x="125" y="125" class="text">LiDAR (10 Hz)</text>
+  <text x="125" y="145" class="text">Camera (30 FPS)</text>
+  
+  <rect class="sensor" x="50" y="200" width="150" height="60" rx="5"/>
+  <text x="125" y="220" class="title">IMU</text>
+  <text x="125" y="240" class="text">100 Hz</text>
+  
+  <!-- Navigation Subsystem -->
+  <rect class="nav" x="300" y="80" width="200" height="100" rx="5"/>
+  <text x="400" y="105" class="title">Navigation Subsystem</text>
+  <text x="400" y="130" class="text">• Perception</text>
+  <text x="400" y="150" class="text">• Path Planning</text>
+  <text x="400" y="170" class="text">• State Estimation (EKF)</text>
+  
+  <!-- Flight Control -->
+  <rect class="control" x="300" y="230" width="200" height="80" rx="5"/>
+  <text x="400" y="255" class="title">Flight Control</text>
+  <text x="400" y="275" class="text">Pixhawk 4</text>
+  <text x="400" y="295" class="text">MAVLink (50 Hz)</text>
+  
+  <!-- Motors -->
+  <rect class="control" x="325" y="360" width="150" height="60" rx="5"/>
+  <text x="400" y="380" class="title">Motors & ESCs</text>
+  <text x="400" y="400" class="text">Quadcopter (X-frame)</text>
+  
+  <!-- Ground Station -->
+  <rect class="box" x="600" y="150" width="150" height="100" rx="5"/>
+  <text x="675" y="175" class="title">Ground Station</text>
+  <text x="675" y="200" class="text">• Mission Planning</text>
+  <text x="675" y="220" class="text">• Monitoring</text>
+  <text x="675" y="240" class="text">• Manual Override</text>
+  
+  <!-- Arrows -->
+  <!-- Sensors to Navigation -->
+  <path class="arrow" d="M 200 120 L 300 120"/>
+  <path class="arrow" d="M 200 230 L 300 160"/>
+  
+  <!-- Navigation to Flight Control -->
+  <path class="arrow" d="M 400 180 L 400 230"/>
+  
+  <!-- Flight Control to Motors -->
+  <path class="arrow" d="M 400 310 L 400 360"/>
+  
+  <!-- Ground Station to Navigation -->
+  <path class="arrow" d="M 600 200 L 500 150"/>
+  <path class="arrow" d="M 500 200 L 600 200"/>
+  
+  <!-- Labels on arrows -->
+  <text x="250" y="115" class="text" font-size="10">Point Cloud</text>
+  <text x="250" y="200" class="text" font-size="10">IMU Data</text>
+  <text x="420" y="210" class="text" font-size="10">Trajectory</text>
+  <text x="420" y="340" class="text" font-size="10">PWM</text>
+  <text x="550" y="175" class="text" font-size="10">Commands</text>
+  <text x="550" y="195" class="text" font-size="10">Telemetry</text>
+  
+  <!-- Legend -->
+  <rect class="sensor" x="50" y="500" width="30" height="20" rx="3"/>
+  <text x="90" y="515" class="text" text-anchor="start">Sensors</text>
+  
+  <rect class="nav" x="200" y="500" width="30" height="20" rx="3"/>
+  <text x="240" y="515" class="text" text-anchor="start">Processing</text>
+  
+  <rect class="control" x="350" y="500" width="30" height="20" rx="3"/>
+  <text x="390" y="515" class="text" text-anchor="start">Control & Actuation</text>
+  
+  <rect class="box" x="550" y="500" width="30" height="20" rx="3"/>
+  <text x="590" y="515" class="text" text-anchor="start">User Interface</text>
+  
+  <!-- Version info -->
+  <text x="750" y="590" class="text" font-size="10" text-anchor="end">ADNS v1.0.0</text>
+</svg>

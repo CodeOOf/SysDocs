@@ -12,12 +12,18 @@
 
 ## 🎯 Overview
 
-SysDocs is an open-source, cross-platform documentation automation tool designed for Systems Engineering projects. It transforms various input formats (Markdown, Word, LaTeX, PDF) into professional, deterministic PDF outputs with full traceability and tool qualification support.
+SysDocs is an open-source, Linux-native documentation automation tool designed for Systems Engineering projects. It transforms various input formats (Markdown, Word, LaTeX, PDF) into professional, deterministic PDF outputs with full traceability and tool qualification support.
+
+### Deployment Model
+
+- **Production**: Linux Docker image only (cross-platform execution via Docker)
+- **Development**: Linux native, macOS native, or Windows via WSL2
+- **No platform-specific binaries** - Docker handles all platform differences
 
 ### Key Features
 
 - 🔄 **Deterministic Builds** - Identical outputs across all platforms and environments (see [docs/DETERMINISM_EXPLAINED.md](docs/DETERMINISM_EXPLAINED.md))
-- 📦 **Containerized** - Run anywhere with Docker
+- 🐳 **Docker-First** - Primary deployment via Linux Docker image
 - 🔒 **Air-Gap Compatible** - No external network dependencies
 - 📊 **SE Compliance** - INCOSE SE Handbook & V-Model aligned
 - 🔍 **Full Traceability** - Change tracking and requirements mapping
@@ -27,7 +33,34 @@ SysDocs is an open-source, cross-platform documentation automation tool designed
 
 ## 🚀 Quick Start
 
-**🏁 You are here: README.md (Start)**
+**🎯 You are here: README.md (Start)**
+
+### 🐳 Using Docker (Recommended for All Platforms)
+
+```bash
+# Pull the latest version
+docker pull ghcr.io/codeof/sysdocs:latest
+
+# Run SysDocs
+docker run -v $(pwd):/workspace ghcr.io/codeof/sysdocs:latest \
+  --input /workspace/input.md \
+  --output /workspace/output.pdf
+
+# Or create an alias for easier use
+alias sysdocs='docker run -v $(pwd):/workspace ghcr.io/codeof/sysdocs:latest'
+sysdocs --help
+```
+
+**Works on**: Windows, Linux, macOS - Docker handles everything!
+
+### 🔧 For Developers
+
+**Platform-Specific Setup**:
+- **Linux**: See [CONTRIBUTING.md](project/CONTRIBUTING.md) for .NET SDK + Nix setup
+- **macOS**: See [CONTRIBUTING.md](project/CONTRIBUTING.md) for .NET SDK + Nix setup  
+- **Windows**: See [WINDOWS_BUILD.md](docs/WINDOWS_BUILD.md) for WSL2 setup
+
+**Architecture Overview**: See [PLATFORM_ARCHITECTURE.md](docs/PLATFORM_ARCHITECTURE.md) for complete platform strategy
 
 ### 📖 Choose Your Reading Path
 
@@ -62,17 +95,19 @@ SysDocs is an open-source, cross-platform documentation automation tool designed
 
 ### Prerequisites
 
-**Mandatory for official builds:**
-- [Nix](https://nixos.org/download.html) with flakes enabled
-- **Windows users**: Requires [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install) - see [docs/WINDOWS_BUILD.md](docs/WINDOWS_BUILD.md)
+**For Production Use:**
+- [Docker](https://www.docker.com/get-started) (any platform)
 
-**Optional for development:**
-- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) (LTS)
-- [Docker Desktop](https://www.docker.com/get-started) (for loading images)
+**For Development:**
+- **Linux**: [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) + [Nix](https://nixos.org/download.html) (for deterministic builds)
+- **macOS**: [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) + [Nix](https://nixos.org/download.html) (for deterministic builds)
+- **Windows**: [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install) required for Linux tooling - see [docs/WINDOWS_BUILD.md](docs/WINDOWS_BUILD.md)
+
+**Note**: Official releases are Linux Docker images built from Linux CI/CD. Windows/macOS developers use WSL2/native .NET for development, but final builds happen on Linux.
 
 ### Building with Nix (Deterministic)
 
-**This is the ONLY way to produce official, reproducible builds:**
+**This produces the official, reproducible Linux Docker image:**
 
 ```bash
 # Linux/macOS: Install Nix directly
@@ -90,13 +125,13 @@ docker load < result
 # Run
 docker run sysdocs:0.1.0-alpha --help
 
-# Verify determinism (hash will be identical across all machines)
+# Verify determinism (hash will be identical across all Linux builds)
 sha256sum result
 ```
 
-**Why Nix is mandatory:**
+**Why Nix is mandatory for official releases:**
 - ✅ Cryptographically guaranteed reproducible builds
-- ✅ Same hash on Windows, Linux, and macOS
+- ✅ Same hash on Fedora, Debian, Ubuntu, etc.
 - ✅ No dependency drift over time
 - ✅ Audit-ready traceability
 

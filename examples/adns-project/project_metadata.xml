@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <metadata>
+    <name>Autonomous Drone Navigation System</name>
+    <acronym>ADNS</acronym>
+    <version>1.0.0</version>
+    <status>Beta Testing</status>
+    <start_date>2025-01-15</start_date>
+    <end_date>2026-06-30</end_date>
+    <budget currency="USD">2400000</budget>
+  </metadata>
+  
+  <team>
+    <member>
+      <name>Sarah Chen</name>
+      <role>Program Manager</role>
+      <allocation>100%</allocation>
+    </member>
+    <member>
+      <name>James Park</name>
+      <role>Chief Systems Engineer</role>
+      <allocation>100%</allocation>
+    </member>
+    <member>
+      <name>Emily Watson</name>
+      <role>Test Manager</role>
+      <allocation>100%</allocation>
+    </member>
+  </team>
+  
+  <milestones>
+    <milestone>
+      <name>System Requirements Review</name>
+      <date>2025-03-01</date>
+      <status>Complete</status>
+    </milestone>
+    <milestone>
+      <name>Preliminary Design Review</name>
+      <date>2025-05-15</date>
+      <status>Complete</status>
+    </milestone>
+    <milestone>
+      <name>Critical Design Review</name>
+      <date>2025-07-01</date>
+      <status>Complete</status>
+    </milestone>
+    <milestone>
+      <name>Beta Release</name>
+      <date>2025-12-20</date>
+      <status>In Progress</status>
+    </milestone>
+    <milestone>
+      <name>System Test Complete</name>
+      <date>2026-02-28</date>
+      <status>Not Started</status>
+    </milestone>
+    <milestone>
+      <name>Final Delivery</name>
+      <date>2026-06-30</date>
+      <status>Not Started</status>
+    </milestone>
+  </milestones>
+  
+  <requirements>
+    <functional count="45"/>
+    <performance count="15"/>
+    <safety count="8"/>
+    <security count="5"/>
+    <interface count="12"/>
+  </requirements>
+</project>

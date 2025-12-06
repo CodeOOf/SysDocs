@@ -1,0 +1,16 @@
+Requirement ID,Requirement Text,Priority,Status,Verification Method,Owner
+SYS-FR-001,The system SHALL detect obstacles within a 50-meter radius using LiDAR,Critical,Implemented,System Test ST-001,Perception Team
+SYS-FR-002,The system SHALL classify obstacles as static or dynamic with 95% accuracy,High,Implemented,System Test ST-002,Perception Team
+SYS-FR-003,The system SHALL process camera images at minimum 30 FPS,High,Implemented,Performance Test PT-001,Vision Team
+SYS-FR-004,The system SHALL fuse sensor data into unified world model,Critical,Implemented,Integration Test IT-003,Navigation Team
+SYS-FR-010,The system SHALL compute collision-free trajectories within 200ms,Critical,Implemented,System Test ST-010,Planning Team
+SYS-FR-011,The system SHALL maintain position accuracy within ±0.5m,High,Implemented,System Test ST-011,Navigation Team
+SYS-FR-020,The system SHALL estimate 6-DOF pose at 100 Hz,Critical,Implemented,Performance Test PT-020,State Estimation
+SYS-FR-030,The system SHALL execute autonomous takeoff to 5m altitude,High,Implemented,System Test ST-030,Mission Control
+SYS-FR-031,The system SHALL execute autonomous landing with ±0.5m accuracy,Critical,Implemented,System Test ST-031,Mission Control
+SYS-FR-040,The system SHALL provide real-time telemetry at minimum 1 Hz,Medium,Implemented,System Test ST-040,Comms Team
+SYS-PR-001,The system SHALL maintain end-to-end latency < 100ms,Critical,In Progress,Performance Test PT-100,Integration
+SYS-PR-010,The system SHALL achieve obstacle detection accuracy > 99.5%,Critical,Implemented,System Test ST-100,Perception Team
+SYS-SR-001,The system SHALL prevent flight outside authorized airspace,Critical,Implemented,System Test ST-200,Safety Team
+SYS-SR-002,The system SHALL execute emergency landing on critical failure,Critical,Implemented,Failure Test FT-001,Safety Team
+SYS-SR-003,The system SHALL maintain detection if single sensor fails,Critical,Implemented,Failure Test FT-002,Safety Team

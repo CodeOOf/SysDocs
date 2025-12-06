@@ -1,7 +1,7 @@
 # Makefile for SysDocs
 # Cross-platform build automation
 
-.PHONY: help restore build test publish docker clean all reports format lint
+.PHONY: help restore build test publish docker clean all reports format lint sign verify-signatures
 
 # Default configuration
 CONFIGURATION ?= Release
@@ -42,6 +42,9 @@ help: ## Show this help message
 	@echo "  reports         Generate traceability and license reports"
 	@echo "  report-trace    Generate traceability report only"
 	@echo "  report-license  Generate license compliance report only"
+	@echo "  sign            Sign all release artifacts (Windows only)"
+	@echo "  sign-assemblies Sign .NET assemblies (Windows only)"
+	@echo "  verify-signatures Verify code signatures"
 	@echo "  format          Format code using dotnet format"
 	@echo "  lint            Check code formatting"
 	@echo "  nix-build       Build with Nix (deterministic)"
@@ -130,9 +133,29 @@ report-trace: ## Generate traceability report only
 	@echo "==> Generating traceability report..."
 	@dotnet run --project $(TESTS_PROJECT) -- --traceability
 
-report-license: ## Generate license compliance report only
+report-license: ## Generate license compliance report
 	@echo "==> Generating license compliance report..."
 	@dotnet run --project $(TESTS_PROJECT) -- --license-compliance
+
+sign: sign-assemblies ## Sign all release artifacts (NFR-07)
+
+sign-assemblies: ## Sign .NET assemblies with Authenticode (Windows only)
+ifeq ($(OS),Windows_NT)
+	@echo "==> Signing assemblies..."
+	@$(SCRIPT_RUNNER) scripts/sign-assemblies$(SCRIPT_EXT)
+else
+	@echo "⚠️  Code signing with Authenticode is only supported on Windows"
+	@echo "   Strong-name signing can be enabled in Directory.Build.props"
+endif
+
+verify-signatures: ## Verify code signatures on assemblies and executables
+ifeq ($(OS),Windows_NT)
+	@echo "==> Verifying code signatures..."
+	@$(SCRIPT_RUNNER) scripts/verify-signatures$(SCRIPT_EXT)
+else
+	@echo "⚠️  Authenticode signature verification is only supported on Windows"
+	@echo "   Strong-name verification: sn -vf <assembly.dll>"
+endif
 
 format: ## Format code using dotnet format
 	@echo "==> Formatting code..."
