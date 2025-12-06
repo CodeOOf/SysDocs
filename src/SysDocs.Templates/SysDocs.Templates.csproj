@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>SE artifact templates for INCOSE and V-Model compliance</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SysDocs.Core\SysDocs.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Embedded template resources -->
+    <EmbeddedResource Include="Templates\**\*.json" />
+    <EmbeddedResource Include="Templates\**\*.xml" />
+    <EmbeddedResource Include="Fonts\**\*.ttf" />
+  </ItemGroup>
+
+</Project>

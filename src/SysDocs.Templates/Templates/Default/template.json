@@ -1,0 +1,101 @@
+{
+  "name": "Default",
+  "version": "1.0.0",
+  "description": "Basic document template for SysDocs",
+  "metadata": {
+    "author": "SysDocs",
+    "created": "2025-12-06",
+    "updated": "2025-12-06"
+  },
+  "styles": {
+    "document": {
+      "fontFamily": "Liberation Sans",
+      "fontSize": 11,
+      "lineHeight": 1.5,
+      "textColor": "#000000"
+    },
+    "heading1": {
+      "fontSize": 18,
+      "bold": true,
+      "color": "#1a1a1a",
+      "spaceBefore": 12,
+      "spaceAfter": 6
+    },
+    "heading2": {
+      "fontSize": 16,
+      "bold": true,
+      "color": "#2a2a2a",
+      "spaceBefore": 10,
+      "spaceAfter": 5
+    },
+    "heading3": {
+      "fontSize": 14,
+      "bold": true,
+      "color": "#3a3a3a",
+      "spaceBefore": 8,
+      "spaceAfter": 4
+    },
+    "paragraph": {
+      "fontSize": 11,
+      "spaceBefore": 3,
+      "spaceAfter": 3
+    },
+    "code": {
+      "fontFamily": "Liberation Mono",
+      "fontSize": 10,
+      "backgroundColor": "#f5f5f5",
+      "padding": 10
+    },
+    "table": {
+      "borderColor": "#cccccc",
+      "borderWidth": 1,
+      "headerBackground": "#e0e0e0",
+      "headerBold": true
+    }
+  },
+  "layout": {
+    "pageSize": "A4",
+    "orientation": "portrait",
+    "margins": {
+      "top": 25,
+      "bottom": 25,
+      "left": 25,
+      "right": 25
+    },
+    "header": {
+      "enabled": true,
+      "height": 15,
+      "content": "{title}",
+      "fontSize": 9,
+      "color": "#666666"
+    },
+    "footer": {
+      "enabled": true,
+      "height": 15,
+      "content": "Page {page} of {totalPages}",
+      "fontSize": 9,
+      "color": "#666666",
+      "alignment": "center"
+    }
+  },
+  "coverPage": {
+    "enabled": true,
+    "title": {
+      "fontSize": 24,
+      "bold": true,
+      "alignment": "center",
+      "marginTop": 100
+    },
+    "metadata": {
+      "show": ["author", "version", "date"],
+      "alignment": "center",
+      "marginTop": 50
+    }
+  },
+  "tableOfContents": {
+    "enabled": true,
+    "title": "Table of Contents",
+    "depth": 3,
+    "pageBreakAfter": true
+  }
+}

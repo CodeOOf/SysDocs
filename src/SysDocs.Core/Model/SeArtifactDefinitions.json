@@ -1,0 +1,256 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sysdocs.example.com/schemas/se-artifact-definitions.json",
+  "title": "Systems Engineering Artifact Definitions",
+  "description": "Machine-parsable definitions of SE artifacts aligned with INCOSE SE Handbook and V-Model (FR-10, FR-11)",
+  "version": "1.0.0",
+  "lastUpdated": "2025-12-06",
+  
+  "incoseAlignment": {
+    "reference": "INCOSE Systems Engineering Handbook: A Guide for System Life Cycle Processes and Activities, 5th Edition",
+    "url": "https://www.incose.org/products-and-publications/se-handbook",
+    "requirement": "FR-10"
+  },
+  
+  "vModelAlignment": {
+    "reference": "V-Model Systems Development Methodology",
+    "description": "Development and verification phases following the V-Model approach",
+    "requirement": "FR-11"
+  },
+  
+  "vModelPhases": [
+    {
+      "id": "stakeholder-requirements",
+      "name": "Stakeholder Requirements",
+      "vModelLevel": "left-upper",
+      "sequence": 1,
+      "description": "Defines needs and expectations from stakeholders' perspective",
+      "incoseProcess": "Business or Mission Analysis",
+      "typicalArtifacts": [
+        "Stakeholder Requirements Document",
+        "Concept of Operations (ConOps)",
+        "User Stories",
+        "Use Case Diagrams"
+      ],
+      "outputFormats": ["PDF", "Markdown"],
+      "verification": "validation-phase",
+      "traceabilityLinks": ["system-requirements"]
+    },
+    {
+      "id": "system-requirements",
+      "name": "System Requirements",
+      "vModelLevel": "left-mid-upper",
+      "sequence": 2,
+      "description": "Technical requirements derived from stakeholder needs",
+      "incoseProcess": "System Requirements Definition",
+      "typicalArtifacts": [
+        "System Requirements Specification (SRS)",
+        "Functional Requirements",
+        "Non-Functional Requirements",
+        "Constraints"
+      ],
+      "outputFormats": ["PDF", "Markdown"],
+      "verification": "system-verification",
+      "traceabilityLinks": ["stakeholder-requirements", "architecture"]
+    },
+    {
+      "id": "architecture",
+      "name": "System Architecture",
+      "vModelLevel": "left-mid-lower",
+      "sequence": 3,
+      "description": "High-level structural design and component allocation",
+      "incoseProcess": "Architecture Definition",
+      "typicalArtifacts": [
+        "System Architecture Document",
+        "Component Diagrams",
+        "Interface Definitions",
+        "Allocation Tables"
+      ],
+      "outputFormats": ["PDF", "Markdown"],
+      "verification": "integration-verification",
+      "traceabilityLinks": ["system-requirements", "detailed-design"]
+    },
+    {
+      "id": "detailed-design",
+      "name": "Detailed Design",
+      "vModelLevel": "bottom",
+      "sequence": 4,
+      "description": "Component-level implementation specifications",
+      "incoseProcess": "Design Definition",
+      "typicalArtifacts": [
+        "Detailed Design Document",
+        "Component Specifications",
+        "Interface Control Documents",
+        "Data Models"
+      ],
+      "outputFormats": ["PDF", "Markdown"],
+      "verification": "unit-verification",
+      "traceabilityLinks": ["architecture"]
+    },
+    {
+      "id": "unit-verification",
+      "name": "Unit Verification",
+      "vModelLevel": "right-bottom",
+      "sequence": 5,
+      "description": "Component-level testing and verification",
+      "incoseProcess": "Verification",
+      "typicalArtifacts": [
+        "Unit Test Plans",
+        "Unit Test Reports",
+        "Code Review Records",
+        "Coverage Reports"
+      ],
+      "outputFormats": ["PDF", "Markdown"],
+      "verification": null,
+      "traceabilityLinks": ["detailed-design"]
+    },
+    {
+      "id": "integration-verification",
+      "name": "Integration Verification",
+      "vModelLevel": "right-mid-lower",
+      "sequence": 6,
+      "description": "Component integration testing",
+      "incoseProcess": "Integration and Verification",
+      "typicalArtifacts": [
+        "Integration Test Plans",
+        "Integration Test Reports",
+        "Interface Test Results"
+      ],
+      "outputFormats": ["PDF", "Markdown"],
+      "verification": null,
+      "traceabilityLinks": ["architecture"]
+    },
+    {
+      "id": "system-verification",
+      "name": "System Verification",
+      "vModelLevel": "right-mid-upper",
+      "sequence": 7,
+      "description": "System-level verification against requirements",
+      "incoseProcess": "System Verification",
+      "typicalArtifacts": [
+        "System Test Plans",
+        "System Test Reports",
+        "Verification Matrix",
+        "Requirements Verification Reports"
+      ],
+      "outputFormats": ["PDF", "Markdown"],
+      "verification": null,
+      "traceabilityLinks": ["system-requirements"]
+    },
+    {
+      "id": "validation-phase",
+      "name": "System Validation",
+      "vModelLevel": "right-upper",
+      "sequence": 8,
+      "description": "Validation with stakeholders and operational environment",
+      "incoseProcess": "Validation",
+      "typicalArtifacts": [
+        "Validation Test Plans",
+        "Validation Reports",
+        "User Acceptance Tests",
+        "Operational Readiness Reviews"
+      ],
+      "outputFormats": ["PDF", "Markdown"],
+      "verification": null,
+      "traceabilityLinks": ["stakeholder-requirements"]
+    }
+  ],
+  
+  "crossCuttingArtifacts": [
+    {
+      "id": "traceability-matrix",
+      "name": "Traceability Matrix",
+      "description": "Documents relationships between artifacts across V-Model phases",
+      "incoseProcess": "Technical Planning (Configuration Management)",
+      "typicalFormats": ["Requirements Traceability Matrix (RTM)", "Verification Matrix"],
+      "outputFormats": ["PDF", "Markdown", "Excel"],
+      "tracesFrom": ["stakeholder-requirements", "system-requirements", "architecture"],
+      "tracesTo": ["detailed-design", "unit-verification", "system-verification", "validation-phase"],
+      "automationSupport": true
+    },
+    {
+      "id": "verification-validation-matrix",
+      "name": "Verification & Validation Matrix",
+      "description": "Maps requirements to verification and validation methods",
+      "incoseProcess": "Verification and Validation Planning",
+      "typicalFormats": ["V&V Matrix", "Test Coverage Matrix"],
+      "outputFormats": ["PDF", "Markdown"],
+      "includesPhases": ["unit-verification", "integration-verification", "system-verification", "validation-phase"],
+      "automationSupport": true
+    },
+    {
+      "id": "change-management",
+      "name": "Change Management",
+      "description": "Tracks changes across all phases and artifacts",
+      "incoseProcess": "Configuration Management",
+      "typicalFormats": ["Change Request", "Change Impact Analysis", "Version History"],
+      "outputFormats": ["PDF", "Markdown"],
+      "automationSupport": true
+    }
+  ],
+  
+  "artifactMetadata": {
+    "commonAttributes": {
+      "version": "string",
+      "author": "string",
+      "lastModified": "ISO8601 datetime",
+      "approver": "string",
+      "status": ["draft", "review", "approved", "obsolete"],
+      "classification": ["public", "internal", "confidential"],
+      "relatedRequirements": ["array of requirement IDs"],
+      "traceabilityLinks": ["array of artifact IDs"]
+    },
+    "incoseLifecycleStages": [
+      "Concept",
+      "Development",
+      "Production",
+      "Utilization",
+      "Support",
+      "Retirement"
+    ]
+  },
+  
+  "documentTemplates": {
+    "stakeholderRequirements": {
+      "sections": [
+        "Introduction and Purpose",
+        "Stakeholder Identification",
+        "Operational Concepts",
+        "Stakeholder Needs",
+        "Requirements",
+        "Constraints",
+        "Assumptions"
+      ]
+    },
+    "systemRequirements": {
+      "sections": [
+        "Introduction",
+        "Functional Requirements",
+        "Non-Functional Requirements",
+        "Constraints",
+        "Interface Requirements",
+        "Traceability to Stakeholder Requirements"
+      ]
+    },
+    "architectureDocument": {
+      "sections": [
+        "Introduction",
+        "Architectural Views",
+        "Component Descriptions",
+        "Interface Definitions",
+        "Allocation of Requirements",
+        "Design Rationale"
+      ]
+    },
+    "verificationReport": {
+      "sections": [
+        "Introduction",
+        "Verification Approach",
+        "Test Cases and Results",
+        "Requirements Coverage",
+        "Deviations and Waivers",
+        "Conclusions"
+      ]
+    }
+  }
+}

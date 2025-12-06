@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Core processing engine for SysDocs - deterministic SE documentation generation</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Markdown processing -->
+    <PackageReference Include="Markdig" Version="0.37.0" />
+    
+    <!-- PDF generation - deterministic -->
+    <PackageReference Include="QuestPDF" Version="2024.10.2" />
+    
+    <!-- Image processing - cross-platform -->
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
+    
+    <!-- Git integration -->
+    <PackageReference Include="LibGit2Sharp" Version="0.30.0" />
+    
+    <!-- Logging - Using .NET 8 LTS version (forward compatible with .NET 10) -->
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
+    
+    <!-- Configuration - Using .NET 8 LTS version (forward compatible with .NET 10) -->
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>

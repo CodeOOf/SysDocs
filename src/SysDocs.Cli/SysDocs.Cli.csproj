@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <Description>Command-line interface for SysDocs</Description>
+    <AssemblyName>sysdocs</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SysDocs.Core\SysDocs.Core.csproj" />
+    <ProjectReference Include="..\SysDocs.Templates\SysDocs.Templates.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Modern CLI framework -->
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    
+    <!-- Dependency injection - Using .NET 8 LTS version (forward compatible with .NET 10) -->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    
+    <!-- Logging - Using .NET 8 LTS version (forward compatible with .NET 10) -->
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.1" />
+    
+    <!-- Configuration - Using .NET 8 LTS version (forward compatible with .NET 10) -->
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>
